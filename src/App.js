@@ -8,6 +8,7 @@ import rootReducer from "./reducers";
 
 //  Shared Components
 import ScreenLoading from "./components/SharedComponents/ScreenLoading";
+import Startup from "./components/Startup";
 
 //  Components
 import Login from "./components/Login";
@@ -33,14 +34,20 @@ class App extends Component {
 
     return (
       <Provider store={store}>
-        <Router>
-          <Switch>
-            <AuthRedirectRoute exact path={["/", "/login"]} component={Login} />
-            <PrivateRoute exact path="/panel" component={Panel} />
-            <Route component={NoMatchPage} />
-          </Switch>
-        </Router>
-        <ScreenLoading />
+        <Startup>
+          <Router>
+            <Switch>
+              <AuthRedirectRoute
+                exact
+                path={["/", "/login"]}
+                component={Login}
+              />
+              <PrivateRoute exact path="/panel" component={Panel} />
+              <Route component={NoMatchPage} />
+            </Switch>
+          </Router>
+          <ScreenLoading />
+        </Startup>
       </Provider>
     );
   }

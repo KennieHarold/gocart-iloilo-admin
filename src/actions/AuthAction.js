@@ -1,12 +1,12 @@
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import {
   AUTH_RESET_STATE,
   EMAIL_CHANGE,
   PASSWORD_CHANGE,
   SUCCESS_LOGIN,
 } from "./actionTypes/authTypes";
-import { screenLoadingChange } from "./LoaderAction";
+import { screenLoadingChange, authLoadingChange } from "./LoaderAction";
 
 export const authResetState = () => {
   return {
@@ -54,5 +54,32 @@ export const adminLogin = (email, password) => {
     }
 
     dispatch(screenLoadingChange(false));
+  };
+};
+
+const mockDelay = (t, v) => {
+  return new Promise(function (resolve) {
+    setTimeout(resolve.bind(null, v), t);
+  });
+};
+
+export const checkLoggedIn = () => {
+  return async (dispatch) => {
+    await mockDelay(1000);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (user.uid) {
+          dispatch(authLoadingChange(false));
+          dispatch(successLogin());
+        }
+      } else {
+        dispatch(authLoadingChange(false));
+        // Clear all states just to make sure
+      }
+    });
+
+    //  Just to make sure loading is stopped :-D
+    dispatch(authLoadingChange(false));
   };
 };
