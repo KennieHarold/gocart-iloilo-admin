@@ -9,4 +9,4 @@ export const db = getFirestore();
 
 //  Collections
 export const usersCollection = collection(db, "devUsers");
-export const usersCollection = collection(db, "devOrders");
+export const ordersCollection = collection(db, "devOrders");
