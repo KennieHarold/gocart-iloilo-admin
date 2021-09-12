@@ -3,7 +3,11 @@ import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 
 class Dashboard extends Component {
   render() {
-    return <SidebarWrapper>Heey</SidebarWrapper>;
+    return (
+      <SidebarWrapper pathName={this.props.location.pathname}>
+        Heey
+      </SidebarWrapper>
+    );
   }
 }
 

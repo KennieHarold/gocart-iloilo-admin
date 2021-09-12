@@ -57,16 +57,8 @@ export const adminLogin = (email, password) => {
   };
 };
 
-const mockDelay = (t, v) => {
-  return new Promise(function (resolve) {
-    setTimeout(resolve.bind(null, v), t);
-  });
-};
-
 export const checkLoggedIn = () => {
   return async (dispatch) => {
-    await mockDelay(1000);
-
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.uid) {
@@ -75,11 +67,7 @@ export const checkLoggedIn = () => {
         }
       } else {
         dispatch(authLoadingChange(false));
-        // Clear all states just to make sure
       }
     });
-
-    //  Just to make sure loading is stopped :-D
-    dispatch(authLoadingChange(false));
   };
 };

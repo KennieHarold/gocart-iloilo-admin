@@ -6,31 +6,31 @@ import { AiOutlineDashboard, AiOutlineBook } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
 import "./styles.css";
 
-const items = [
-  {
-    key: "item-dashboard",
-    label: "Dashboard",
-    path: "/dashboard",
-    icon: <AiOutlineDashboard style={{ fontSize: 30 }} />,
-  },
-  {
-    key: "item-users",
-    label: "Users",
-    path: "/users",
-    icon: <FaRegUser style={{ fontSize: 25, marginBottom: 5 }} />,
-  },
-  {
-    key: "item-orders",
-    label: "Orders",
-    path: "/orders",
-    icon: <AiOutlineBook style={{ fontSize: 28, marginBottom: 3 }} />,
-  },
-];
-
 class SidebarWrappper extends Component {
   render() {
+    const items = [
+      {
+        key: "item-dashboard",
+        label: "Dashboard",
+        path: "/dashboard",
+        icon: <AiOutlineDashboard style={{ fontSize: 30 }} />,
+      },
+      {
+        key: "item-users",
+        label: "Users",
+        path: "/users",
+        icon: <FaRegUser style={{ fontSize: 25, marginBottom: 5 }} />,
+      },
+      {
+        key: "item-orders",
+        label: "Orders",
+        path: "/orders",
+        icon: <AiOutlineBook style={{ fontSize: 28, marginBottom: 3 }} />,
+      },
+    ];
+
     return (
-      <div class="d-flex">
+      <div className="d-flex">
         <div
           style={{
             width: "12%",
@@ -55,15 +55,21 @@ class SidebarWrappper extends Component {
           />
           <ul className="list-group w-100" style={{ borderRadius: 0 }}>
             {items.map((item) => (
-              <NavLink exact to={item.path} style={{ textDecoration: "none" }}>
+              <NavLink
+                key={item.key}
+                exact
+                to={item.path}
+                style={{ textDecoration: "none" }}
+              >
                 <li
-                  key={item.key}
                   className="list-group-item sidebar-item"
                   style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     cursor: "pointer",
+                    color:
+                      this.props.pathName === item.path ? "#007bff" : "gray",
                   }}
                 >
                   {item.icon}
@@ -73,7 +79,7 @@ class SidebarWrappper extends Component {
             ))}
           </ul>
         </div>
-        <div class="p-4" style={{ background: "#F2F7FA", width: "100%" }}>
+        <div className="p-4" style={{ background: "#F2F7FA", width: "100%" }}>
           {this.props.children}
         </div>
       </div>

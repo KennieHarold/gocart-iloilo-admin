@@ -3,7 +3,11 @@ import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 
 class Orders extends Component {
   render() {
-    return <SidebarWrapper>Orders</SidebarWrapper>;
+    return (
+      <SidebarWrapper pathName={this.props.location.pathname}>
+        Orders
+      </SidebarWrapper>
+    );
   }
 }
 
