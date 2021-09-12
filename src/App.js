@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import { AuthRedirectRoute, PrivateRoute } from "./routes/AuthRoute";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
@@ -12,13 +17,11 @@ import Startup from "./components/Startup";
 
 //  Components
 import Login from "./components/Login";
-import Panel from "./components/Panel";
+import Dashboard from "./components/Dashboard";
+import Users from "./components/Users";
+import Orders from "./components/Orders";
 
-const NoMatchPage = () => (
-  <center>
-    <h5 class="p-3">404 - Not found</h5>
-  </center>
-);
+const NoMatch = () => <Redirect to="/" />;
 
 class App extends Component {
   bindMiddleware = (middleware) => {
@@ -42,8 +45,10 @@ class App extends Component {
                 path={["/", "/login"]}
                 component={Login}
               />
-              <PrivateRoute exact path="/panel" component={Panel} />
-              <Route component={NoMatchPage} />
+              <PrivateRoute path="/dashboard" component={Dashboard} />
+              <PrivateRoute path="/users" component={Users} />
+              <PrivateRoute path="/orders" component={Orders} />
+              <Route component={NoMatch} />
             </Switch>
           </Router>
           <ScreenLoading />

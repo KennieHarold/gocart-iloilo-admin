@@ -24,7 +24,7 @@ export const AuthRedirectRoute = ({ component: Component, ...rest }) => {
 
   const AuthRedirect = (props) => {
     if (isAuthenticated) {
-      return <Redirect to="/panel" />;
+      return <Redirect to="/dashboard" />;
     }
     return <Component {...props} />;
   };
