@@ -8,5 +8,5 @@ export const auth = getAuth();
 export const db = getFirestore();
 
 //  Collections
-export const usersCollection = collection(db, "devUsers");
-export const ordersCollection = collection(db, "devOrders");
+export const usersCollection = collection(db, "liveUsers");
+export const ordersCollection = collection(db, "liveOrders");

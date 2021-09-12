@@ -5,7 +5,12 @@ class Orders extends Component {
   render() {
     return (
       <SidebarWrapper pathName={this.props.location.pathname}>
-        Orders
+        <div
+          className="w-100 pb-2 mb-5"
+          style={{ borderBottom: "0.5px solid lightgray" }}
+        >
+          <h5>Orders</h5>
+        </div>
       </SidebarWrapper>
     );
   }

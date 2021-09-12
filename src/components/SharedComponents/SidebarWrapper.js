@@ -4,7 +4,6 @@ import Image from "react-bootstrap/Image";
 import logo from "../../assets/app-icon.png";
 import { AiOutlineDashboard, AiOutlineBook } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
-import "./styles.css";
 
 class SidebarWrappper extends Component {
   render() {
