@@ -4,14 +4,14 @@ import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import moment from "moment";
-import { loadOrders } from "../actions/OrderAction";
+import { getOrdersFromDb } from "../actions/OrderAction";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.loadOrders();
+    this.props.getOrdersFromDb();
   }
 
   getStatusBadge = (status) => {
@@ -40,11 +40,15 @@ class Orders extends Component {
       },
       {
         key: "order-thead-reference",
-        label: "Reference #",
+        label: "Reference",
       },
       {
         key: "order-thead-created",
         label: "Date Ordered",
+      },
+      {
+        key: "order-thead-total",
+        label: "Total",
       },
       {
         key: "order-thead-status",
@@ -59,7 +63,7 @@ class Orders extends Component {
     return (
       <SidebarWrapper pathName={this.props.location.pathname}>
         <div
-          className="w-100 pb-2 mb-5"
+          className="w-100 pb-2 mb-4"
           style={{ borderBottom: "0.5px solid lightgray" }}
         >
           <h5>Orders</h5>
@@ -72,7 +76,7 @@ class Orders extends Component {
           <div
             style={{
               background: "white",
-              padding: 30,
+              padding: 15,
               borderRadius: 10,
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
@@ -89,18 +93,23 @@ class Orders extends Component {
                 {orders.map((order, index) => (
                   <tr key={order.id} style={{ cursor: "pointer" }}>
                     <td>{index + 1}</td>
-                    <td>{order?.reference}</td>
+                    <td>{order.storeData.name + " | " + order?.reference}</td>
                     <td>
                       {moment(order?.dateCreated?.seconds * 1000).format("LL")}
+                    </td>
+                    <td>
+                      &#8369;&nbsp;{order?.txData?.paymentDetails?.totalPayment}
                     </td>
                     <td>{this.getStatusBadge(order?.status)}</td>
                     <td>
                       {order.status === "processing" ? (
                         <ButtonGroup>
-                          <Button variant="success" className="me-2">
+                          <Button variant="success" className="me-2" size="sm">
                             Set as Delivered
                           </Button>
-                          <Button variant="danger">Cancel</Button>
+                          <Button variant="danger" size="sm">
+                            Cancel
+                          </Button>
                         </ButtonGroup>
                       ) : null}
                     </td>
@@ -124,4 +133,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { loadOrders })(Orders);
+export default connect(mapStateToProps, { getOrdersFromDb })(Orders);

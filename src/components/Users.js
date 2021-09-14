@@ -3,16 +3,70 @@ import { connect } from "react-redux";
 import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
+import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
-import { loadUsers } from "../actions/UserAction";
+import {
+  getUsersFromDb,
+  getRegisteredUsersCount,
+  loadingChange,
+  usersPageLoadedChange,
+  paginateUsers,
+  prevNextCurrentPage,
+  jumpPage,
+} from "../actions/UserAction";
+import { CONST_USER_PAGE_LIMIT } from "../utils/constants";
 
 class Users extends Component {
-  componentDidMount() {
-    this.props.loadUsers();
+  async componentDidMount() {
+    this.initUsers();
   }
 
+  initUsers = async () => {
+    if (!this.props.usersPageLoaded) {
+      this.props.loadingChange(true);
+
+      await this.props.getRegisteredUsersCount();
+      await this.props.paginateUsers(1);
+
+      this.props.loadingChange(false);
+      this.props.usersPageLoadedChange(true);
+    }
+  };
+
+  getPagination = () => {
+    const { totalPage, currentPage, prevNextCurrentPage, jumpPage } =
+      this.props;
+
+    let items = [];
+    for (let number = 1; number <= totalPage; number++) {
+      items.push(
+        <Pagination.Item
+          onClick={() => jumpPage(number)}
+          key={number}
+          active={number === currentPage}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    return (
+      <Pagination className="mt-5">
+        <Pagination.Prev
+          onClick={() => prevNextCurrentPage(-1)}
+          disabled={currentPage === 1}
+        />
+        {items}
+        <Pagination.Next
+          onClick={() => prevNextCurrentPage(1)}
+          disabled={currentPage === totalPage}
+        />
+      </Pagination>
+    );
+  };
+
   render() {
-    const { users, loading } = this.props;
+    const { users, loading, tableLoading, currentPage } = this.props;
 
     const theads = [
       {
@@ -53,38 +107,65 @@ class Users extends Component {
           <div
             style={{
               background: "white",
-              padding: 30,
+              padding: 15,
               borderRadius: 10,
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
           >
-            <Table bordered hover responsive>
-              <thead>
-                <tr>
-                  {theads.map((th) => (
-                    <th key={th.key}>{th.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, index) => (
-                  <tr key={user.id} style={{ cursor: "pointer" }}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <div className="mb-2">{`${user?.firstName} ${user?.lastName} | ${user?.email}`}</div>
-                      <div className="text-secondary" style={{ fontSize: 14 }}>
-                        {user?.address[0]?.formattedAddress}
-                      </div>
-                    </td>
-                    <td>{user?.phone?.code + user?.phone?.number}</td>
-                    <td>{user?.provider}</td>
-                    <td>
-                      {moment(user?.dateCreated?.seconds * 1000).format("LL")}
-                    </td>
+            {users.length > 0 || tableLoading ? (
+              <Table bordered hover responsive style={{ position: "relative" }}>
+                <div
+                  style={{
+                    background: "white",
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "100%",
+                    width: "100%",
+                    display: tableLoading ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Loading...
+                </div>
+                <thead>
+                  <tr>
+                    {theads.map((th) => (
+                      <th key={th.key}>{th.label}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {users.map((user, index) => (
+                    <tr key={user.id} style={{ cursor: "pointer" }}>
+                      <td>
+                        {(currentPage - 1) * CONST_USER_PAGE_LIMIT + index + 1}
+                      </td>
+                      <td>
+                        <div>{`${user?.firstName} ${user?.lastName} | ${user?.email}`}</div>
+                        <div
+                          className="text-secondary"
+                          style={{ fontSize: 14 }}
+                        >
+                          {user?.address[0]?.formattedAddress}
+                        </div>
+                      </td>
+                      <td>{user?.phone?.code + user?.phone?.number}</td>
+                      <td>{user?.provider}</td>
+                      <td>
+                        {moment(user?.dateCreated?.seconds * 1000).format("LL")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <span>No users found</span>
+            )}
+            {this.getPagination()}
           </div>
         )}
       </SidebarWrapper>
@@ -93,12 +174,33 @@ class Users extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { users, loading } = state.user;
+  const {
+    users,
+    loading,
+    currentPage,
+    counters,
+    totalPage,
+    usersPageLoaded,
+    tableLoading,
+  } = state.user;
 
   return {
     users,
     loading,
+    currentPage,
+    counters,
+    totalPage,
+    usersPageLoaded,
+    tableLoading,
   };
 };
 
-export default connect(mapStateToProps, { loadUsers })(Users);
+export default connect(mapStateToProps, {
+  getUsersFromDb,
+  getRegisteredUsersCount,
+  loadingChange,
+  usersPageLoadedChange,
+  paginateUsers,
+  prevNextCurrentPage,
+  jumpPage,
+})(Users);

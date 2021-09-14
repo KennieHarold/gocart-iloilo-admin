@@ -3,8 +3,12 @@ import {
   ORDER_RESET_STATE,
   LOADING_CHANGE,
 } from "./actionTypes/orderTypes";
-import { ordersCollection } from "../firebase";
-import { getDocs, query, orderBy } from "firebase/firestore";
+import {
+  ordersCollection,
+  storesCollection,
+  transactionsCollection,
+} from "../firebase";
+import { getDocs, query, orderBy, where } from "firebase/firestore";
 
 export const addOrder = (order) => {
   return {
@@ -26,7 +30,7 @@ export const loadingChange = (payload) => {
   };
 };
 
-export const loadOrders = () => {
+export const getOrdersFromDb = () => {
   return async (dispatch, getState) => {
     if (getState().order.orders.length > 0) {
       return;
@@ -39,10 +43,35 @@ export const loadOrders = () => {
         alert(error.message);
       });
 
-      querySnapshot.forEach((doc) => {
-        let data = doc.data();
-        dispatch(addOrder(data));
-      });
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data();
+
+        const storeRef = query(
+          storesCollection,
+          where("id", "==", data.storeId)
+        );
+
+        const txRef = query(
+          transactionsCollection,
+          where("id", "==", data.transactionId)
+        );
+
+        const [storeSnapshot, txSnapshot] = await Promise.all([
+          getDocs(storeRef),
+          getDocs(txRef),
+        ]);
+
+        const storeData = storeSnapshot.docs[0].data();
+        const txData = txSnapshot.docs[0].data();
+
+        const orderToAdd = {
+          ...data,
+          storeData,
+          txData,
+        };
+
+        dispatch(addOrder(orderToAdd));
+      }
 
       dispatch(loadingChange(false));
     }
