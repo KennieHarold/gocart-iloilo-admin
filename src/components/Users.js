@@ -112,25 +112,12 @@ class Users extends Component {
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
           >
-            {users.length > 0 || tableLoading ? (
+            {tableLoading ? (
+              <div className="w-100 d-flex justify-content-center mt-4">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            ) : users.length > 0 ? (
               <Table bordered hover responsive style={{ position: "relative" }}>
-                <div
-                  style={{
-                    background: "white",
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: "100%",
-                    width: "100%",
-                    display: tableLoading ? "flex" : "none",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Loading...
-                </div>
                 <thead>
                   <tr>
                     {theads.map((th) => (

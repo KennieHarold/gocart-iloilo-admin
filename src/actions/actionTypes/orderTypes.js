@@ -1,3 +1,9 @@
 export const ADD_ORDER = "add_order";
 export const ORDER_RESET_STATE = "order_reset_state";
 export const LOADING_CHANGE = "loading_change";
+export const CURRENT_PAGE_CHANGE = "current_page_change";
+export const INCREMENT_DECREMENT_PAGE = "increment_decrement_page";
+export const CLEAR_ORDERS = "clear_orders";
+export const TABLE_LOADING_CHANGE = "table_loading_change";
+export const ALL_ORDERS_COUNT_CHANGE = "all_orders_count_change";
+export const ORDERS_PAGE_LOADED_CHANGE = "orders_page_loaded_change";

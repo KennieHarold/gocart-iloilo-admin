@@ -4,15 +4,38 @@ import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import moment from "moment";
-import { getOrdersFromDb } from "../actions/OrderAction";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Pagination from "react-bootstrap/Pagination";
+import toDecimal from "../helpers/toDecimal";
+import {
+  getOrdersFromDb,
+  getAllOrdersCount,
+  loadingChange,
+  ordersPageLoadedChange,
+  paginateOrders,
+  prevNextCurrentPage,
+  jumpPage,
+} from "../actions/OrderAction";
+import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.getOrdersFromDb();
+    this.initOrders();
   }
+
+  initOrders = async () => {
+    if (!this.props.ordersPageLoaded) {
+      this.props.loadingChange(true);
+
+      await this.props.getAllOrdersCount();
+      await this.props.paginateOrders(1);
+
+      this.props.loadingChange(false);
+      this.props.ordersPageLoadedChange(true);
+    }
+  };
 
   getStatusBadge = (status) => {
     switch (status) {
@@ -30,8 +53,40 @@ class Orders extends Component {
     }
   };
 
+  getPagination = () => {
+    const { totalPage, currentPage, prevNextCurrentPage, jumpPage } =
+      this.props;
+
+    let items = [];
+    for (let number = 1; number <= totalPage; number++) {
+      items.push(
+        <Pagination.Item
+          onClick={() => jumpPage(number)}
+          key={number}
+          active={number === currentPage}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    return (
+      <Pagination className="mt-5">
+        <Pagination.Prev
+          onClick={() => prevNextCurrentPage(-1)}
+          disabled={currentPage === 1}
+        />
+        {items}
+        <Pagination.Next
+          onClick={() => prevNextCurrentPage(1)}
+          disabled={currentPage === totalPage}
+        />
+      </Pagination>
+    );
+  };
+
   render() {
-    const { orders, loading } = this.props;
+    const { orders, loading, tableLoading, currentPage } = this.props;
 
     const theads = [
       {
@@ -41,6 +96,10 @@ class Orders extends Component {
       {
         key: "order-thead-reference",
         label: "Reference",
+      },
+      {
+        key: "order-thead-user",
+        label: "Ordered By",
       },
       {
         key: "order-thead-created",
@@ -81,42 +140,67 @@ class Orders extends Component {
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
           >
-            <Table bordered hover responsive>
-              <thead>
-                <tr>
-                  {theads.map((th) => (
-                    <th key={th.key}>{th.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order, index) => (
-                  <tr key={order.id} style={{ cursor: "pointer" }}>
-                    <td>{index + 1}</td>
-                    <td>{order.storeData.name + " | " + order?.reference}</td>
-                    <td>
-                      {moment(order?.dateCreated?.seconds * 1000).format("LL")}
-                    </td>
-                    <td>
-                      &#8369;&nbsp;{order?.txData?.paymentDetails?.totalPayment}
-                    </td>
-                    <td>{this.getStatusBadge(order?.status)}</td>
-                    <td>
-                      {order.status === "processing" ? (
-                        <ButtonGroup>
-                          <Button variant="success" className="me-2" size="sm">
-                            Set as Delivered
-                          </Button>
-                          <Button variant="danger" size="sm">
-                            Cancel
-                          </Button>
-                        </ButtonGroup>
-                      ) : null}
-                    </td>
+            {tableLoading ? (
+              <div className="w-100 d-flex justify-content-center mt-4">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            ) : orders.length > 0 ? (
+              <Table bordered hover responsive>
+                <thead>
+                  <tr>
+                    {theads.map((th) => (
+                      <th key={th.key}>{th.label}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {orders.map((order, index) => (
+                    <tr key={order.id} style={{ cursor: "pointer" }}>
+                      <td>
+                        {(currentPage - 1) * CONST_ORDER_PAGE_LIMIT + index + 1}
+                      </td>
+                      <td>
+                        {order?.storeData?.name + " | " + order?.reference}
+                      </td>
+                      <td>
+                        {order?.userData?.firstName +
+                          " " +
+                          order?.userData?.lastName}
+                      </td>
+                      <td>
+                        {moment(order?.dateCreated?.seconds * 1000).format(
+                          "LL"
+                        )}
+                      </td>
+                      <td>
+                        &#8369;&nbsp;
+                        {toDecimal(order?.txData?.paymentDetails?.totalPayment)}
+                      </td>
+                      <td>{this.getStatusBadge(order?.status)}</td>
+                      <td>
+                        {order.status === "processing" ? (
+                          <ButtonGroup>
+                            <Button
+                              variant="success"
+                              className="me-2"
+                              size="sm"
+                            >
+                              Set as Delivered
+                            </Button>
+                            <Button variant="danger" size="sm">
+                              Cancel
+                            </Button>
+                          </ButtonGroup>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <span>No orders found</span>
+            )}
+            {this.getPagination()}
           </div>
         )}
       </SidebarWrapper>
@@ -125,12 +209,33 @@ class Orders extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { orders, loading } = state.order;
+  const {
+    orders,
+    loading,
+    currentPage,
+    counters,
+    totalPage,
+    ordersPageLoaded,
+    tableLoading,
+  } = state.order;
 
   return {
     orders,
     loading,
+    currentPage,
+    counters,
+    totalPage,
+    ordersPageLoaded,
+    tableLoading,
   };
 };
 
-export default connect(mapStateToProps, { getOrdersFromDb })(Orders);
+export default connect(mapStateToProps, {
+  getOrdersFromDb,
+  getAllOrdersCount,
+  loadingChange,
+  ordersPageLoadedChange,
+  paginateOrders,
+  prevNextCurrentPage,
+  jumpPage,
+})(Orders);
