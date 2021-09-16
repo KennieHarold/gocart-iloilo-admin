@@ -7,11 +7,17 @@ export const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore();
 
+//  DB
+export const usersDb = "liveUsers";
+export const ordersDb = "liveOrders";
+export const transactionsDb = "liveTransactions";
+export const storesDb = "liveStores";
+
 //  Collections
-export const usersCollection = collection(db, "liveUsers");
-export const ordersCollection = collection(db, "liveOrders");
-export const transactionsCollection = collection(db, "liveTransactions");
-export const storesCollection = collection(db, "liveStores");
+export const usersCollection = collection(db, usersDb);
+export const ordersCollection = collection(db, ordersDb);
+export const transactionsCollection = collection(db, transactionsDb);
+export const storesCollection = collection(db, storesDb);
 
 //  Counters
 export const usersCounter = doc(db, "liveCounters", "users");

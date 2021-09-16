@@ -17,6 +17,8 @@ import {
   paginateOrders,
   prevNextCurrentPage,
   jumpPage,
+  setOrderDelivered,
+  setOrderCancelled,
 } from "../actions/OrderAction";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -86,8 +88,15 @@ class Orders extends Component {
   };
 
   render() {
-    const { orders, orderLoading, orderTableLoading, orderCurrentPage } =
-      this.props;
+    const {
+      orders,
+      orderLoading,
+      orderTableLoading,
+      orderCurrentPage,
+      orderStatusUpdating,
+      setOrderDelivered,
+      setOrderCancelled,
+    } = this.props;
 
     const theads = [
       {
@@ -184,13 +193,20 @@ class Orders extends Component {
                         {order.status === "processing" ? (
                           <ButtonGroup>
                             <Button
+                              onClick={() => setOrderDelivered(order)}
                               variant="success"
                               className="me-2"
                               size="sm"
+                              disabled={orderStatusUpdating}
                             >
                               Set as Delivered
                             </Button>
-                            <Button variant="danger" size="sm">
+                            <Button
+                              onClick={() => setOrderCancelled(order)}
+                              variant="danger"
+                              size="sm"
+                              disabled={orderStatusUpdating}
+                            >
                               Cancel
                             </Button>
                           </ButtonGroup>
@@ -219,6 +235,7 @@ const mapStateToProps = (state) => {
     orderTotalPage,
     ordersPageLoaded,
     orderTableLoading,
+    orderStatusUpdating,
   } = state.order;
 
   return {
@@ -228,6 +245,7 @@ const mapStateToProps = (state) => {
     orderTotalPage,
     ordersPageLoaded,
     orderTableLoading,
+    orderStatusUpdating,
   };
 };
 
@@ -239,4 +257,6 @@ export default connect(mapStateToProps, {
   paginateOrders,
   prevNextCurrentPage,
   jumpPage,
+  setOrderDelivered,
+  setOrderCancelled,
 })(Orders);

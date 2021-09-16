@@ -8,6 +8,9 @@ import {
   ORDER_TABLE_LOADING_CHANGE,
   ALL_ORDERS_COUNT_CHANGE,
   ORDERS_PAGE_LOADED_CHANGE,
+  ORDER_STATUS_UPDATING_CHANGE,
+  SET_ORDER_STATE_DELIVERED,
+  SET_ORDER_STATE_CANCELLED,
 } from "../actions/actionTypes/orderTypes";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -21,10 +24,13 @@ const initialState = {
   },
   orderCurrentPage: 1,
   orderTotalPage: 1,
+  orderStatusUpdating: false,
 };
 
 const OrderReducer = (state = initialState, action) => {
   let index = undefined;
+  let tempOrder = undefined;
+  let tempOrders = undefined;
 
   switch (action.type) {
     case ADD_ORDER:
@@ -78,6 +84,67 @@ const OrderReducer = (state = initialState, action) => {
         },
         orderTotalPage: Math.ceil(action.value / CONST_ORDER_PAGE_LIMIT),
       };
+
+    case ORDER_STATUS_UPDATING_CHANGE:
+      return {
+        ...state,
+        orderStatusUpdating: action.payload,
+      };
+
+    case SET_ORDER_STATE_DELIVERED:
+      index = state.orders.findIndex(
+        (order) => order.id === action.payload.order.id
+      );
+
+      if (index !== -1) {
+        tempOrders = [...state.orders];
+        tempOrder = state.orders[index];
+
+        tempOrder.status = "delivered";
+        tempOrder.deliveredAt = action.payload.date;
+
+        if (tempOrder.txData) {
+          tempOrder.txData.status = "paid";
+          tempOrder.txData.datePaid = action.payload.date;
+        }
+
+        tempOrders.splice(index, 1, tempOrder);
+
+        return {
+          ...state,
+          orders: tempOrders,
+        };
+      } else {
+        return state;
+      }
+
+    case SET_ORDER_STATE_CANCELLED:
+      index = state.orders.findIndex(
+        (order) => order.id === action.payload.order.id
+      );
+
+      if (index !== -1) {
+        tempOrders = [...state.orders];
+        tempOrder = state.orders[index];
+
+        tempOrder.status = "cancelled";
+        tempOrder.cancelledAt = action.payload.date;
+
+        if (tempOrder.txData) {
+          if (tempOrder.txData.status === "pending") {
+            tempOrder.txData.status = "cancelled";
+          }
+        }
+
+        tempOrders.splice(index, 1, tempOrder);
+
+        return {
+          ...state,
+          orders: tempOrders,
+        };
+      } else {
+        return state;
+      }
 
     case ORDER_LOADING_CHANGE:
       return {

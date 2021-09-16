@@ -140,53 +140,58 @@ export const tableLoadingChange = (payload) => {
 
 export const paginateUsers = (page) => {
   return async (dispatch) => {
-    //  Clear users state before starting
-    dispatch(clearUser());
-
     dispatch(tableLoadingChange(true));
 
-    let q = undefined;
-    let snapshot = undefined;
+    try {
+      //  Clear users state before starting
+      dispatch(clearUser());
 
-    let queryPage = (page - 1) * CONST_USER_PAGE_LIMIT;
+      let q = undefined;
+      let snapshot = undefined;
 
-    if (queryPage === 0) {
-      q = query(
-        usersCollection,
-        orderBy("dateCreated", "desc"),
-        limit(CONST_USER_PAGE_LIMIT)
-      );
+      let queryPage = (page - 1) * CONST_USER_PAGE_LIMIT;
 
-      snapshot = await getDocs(q);
+      if (queryPage === 0) {
+        q = query(
+          usersCollection,
+          orderBy("dateCreated", "desc"),
+          limit(CONST_USER_PAGE_LIMIT)
+        );
 
-      snapshot.forEach((doc) => {
-        let data = doc.data();
-        dispatch(addUser(data));
-      });
-    } else {
-      q = query(
-        usersCollection,
-        orderBy("dateCreated", "desc"),
-        limit(queryPage)
-      );
+        snapshot = await getDocs(q);
 
-      snapshot = await getDocs(q);
+        snapshot.forEach((doc) => {
+          let data = doc.data();
+          dispatch(addUser(data));
+        });
+      } else {
+        q = query(
+          usersCollection,
+          orderBy("dateCreated", "desc"),
+          limit(queryPage)
+        );
 
-      const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+        snapshot = await getDocs(q);
 
-      q = query(
-        usersCollection,
-        orderBy("dateCreated", "desc"),
-        startAfter(lastDoc),
-        limit(CONST_USER_PAGE_LIMIT)
-      );
+        const lastDoc = snapshot.docs[snapshot.docs.length - 1];
 
-      snapshot = await getDocs(q);
+        q = query(
+          usersCollection,
+          orderBy("dateCreated", "desc"),
+          startAfter(lastDoc),
+          limit(CONST_USER_PAGE_LIMIT)
+        );
 
-      snapshot.forEach((doc) => {
-        let data = doc.data();
-        dispatch(addUser(data));
-      });
+        snapshot = await getDocs(q);
+
+        snapshot.forEach((doc) => {
+          let data = doc.data();
+          dispatch(addUser(data));
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      alert("There is an error on fetching users");
     }
 
     dispatch(tableLoadingChange(false));

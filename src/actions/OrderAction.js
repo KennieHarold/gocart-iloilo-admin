@@ -8,6 +8,9 @@ import {
   ORDER_TABLE_LOADING_CHANGE,
   ALL_ORDERS_COUNT_CHANGE,
   ORDERS_PAGE_LOADED_CHANGE,
+  ORDER_STATUS_UPDATING_CHANGE,
+  SET_ORDER_STATE_DELIVERED,
+  SET_ORDER_STATE_CANCELLED,
 } from "./actionTypes/orderTypes";
 import {
   ordersCollection,
@@ -15,6 +18,9 @@ import {
   transactionsCollection,
   usersCollection,
   ordersCounters,
+  db,
+  ordersDb,
+  transactionsDb,
 } from "../firebase";
 import {
   getDocs,
@@ -24,6 +30,8 @@ import {
   where,
   limit,
   startAfter,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -206,57 +214,160 @@ export const tableLoadingChange = (payload) => {
 
 export const paginateOrders = (page) => {
   return async (dispatch) => {
-    //  Clear orders state before starting
-    dispatch(clearOrders());
-
     dispatch(tableLoadingChange(true));
 
-    let q = undefined;
-    let snapshot = undefined;
+    try {
+      //  Clear orders state before starting
+      dispatch(clearOrders());
 
-    let queryPage = (page - 1) * CONST_ORDER_PAGE_LIMIT;
+      let q = undefined;
+      let snapshot = undefined;
 
-    if (queryPage === 0) {
-      q = query(
-        ordersCollection,
-        orderBy("dateCreated", "desc"),
-        limit(CONST_ORDER_PAGE_LIMIT)
-      );
+      let queryPage = (page - 1) * CONST_ORDER_PAGE_LIMIT;
 
-      snapshot = await getDocs(q);
+      if (queryPage === 0) {
+        q = query(
+          ordersCollection,
+          orderBy("dateCreated", "desc"),
+          limit(CONST_ORDER_PAGE_LIMIT)
+        );
 
-      for (const doc of snapshot.docs) {
-        const data = doc.data();
-        const orderData = await getOrderSubData(data);
-        dispatch(addOrder(orderData));
+        snapshot = await getDocs(q);
+
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          const orderData = await getOrderSubData(data);
+          dispatch(addOrder(orderData));
+        }
+      } else {
+        q = query(
+          ordersCollection,
+          orderBy("dateCreated", "desc"),
+          limit(queryPage)
+        );
+
+        snapshot = await getDocs(q);
+
+        const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+        q = query(
+          ordersCollection,
+          orderBy("dateCreated", "desc"),
+          startAfter(lastDoc),
+          limit(CONST_ORDER_PAGE_LIMIT)
+        );
+
+        snapshot = await getDocs(q);
+
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          const orderData = await getOrderSubData(data);
+          dispatch(addOrder(orderData));
+        }
       }
-    } else {
-      q = query(
-        ordersCollection,
-        orderBy("dateCreated", "desc"),
-        limit(queryPage)
-      );
-
-      snapshot = await getDocs(q);
-
-      const lastDoc = snapshot.docs[snapshot.docs.length - 1];
-
-      q = query(
-        ordersCollection,
-        orderBy("dateCreated", "desc"),
-        startAfter(lastDoc),
-        limit(CONST_ORDER_PAGE_LIMIT)
-      );
-
-      snapshot = await getDocs(q);
-
-      for (const doc of snapshot.docs) {
-        const data = doc.data();
-        const orderData = await getOrderSubData(data);
-        dispatch(addOrder(orderData));
-      }
+    } catch (error) {
+      console.log(error);
+      alert("There is an error fetching orders");
     }
 
     dispatch(tableLoadingChange(false));
+  };
+};
+
+export const orderStatusUpdatingChange = (payload) => {
+  return {
+    type: ORDER_STATUS_UPDATING_CHANGE,
+    payload,
+  };
+};
+
+export const setOrderStateDelivered = (order, date) => {
+  return {
+    type: SET_ORDER_STATE_DELIVERED,
+    payload: {
+      order,
+      date,
+    },
+  };
+};
+
+export const setOrderDelivered = (order) => {
+  return async (dispatch) => {
+    dispatch(orderStatusUpdatingChange(true));
+
+    try {
+      let today = new Date();
+
+      const updateOrderRef = doc(db, ordersDb, order.id);
+
+      await updateDoc(updateOrderRef, {
+        status: "delivered",
+        deliveredAt: today,
+      });
+
+      const updateTxRef = doc(db, transactionsDb, order.transactionId);
+      await updateDoc(updateTxRef, {
+        status: "paid",
+        datePaid: today,
+      });
+
+      dispatch(setOrderStateDelivered(order, today));
+      alert("Successfully updated order to delivered");
+    } catch (error) {
+      console.log(error);
+      alert("There is an error setting the order to delivered");
+    }
+
+    dispatch(orderStatusUpdatingChange(false));
+  };
+};
+
+export const setOrderStateCancelled = (order, date) => {
+  return {
+    type: SET_ORDER_STATE_CANCELLED,
+    payload: {
+      order,
+      date,
+    },
+  };
+};
+
+export const setOrderCancelled = (order) => {
+  return async (dispatch) => {
+    dispatch(orderStatusUpdatingChange(true));
+
+    try {
+      let today = new Date();
+
+      const cancelOrderRef = doc(db, ordersDb, order.id);
+
+      await updateDoc(cancelOrderRef, {
+        status: "cancelled",
+        cancelledAt: today,
+      });
+
+      const txRef = doc(db, transactionsDb, order.transactionId);
+
+      //  Check if status in transaction data is pending
+      const txDocSnap = await getDoc(txRef);
+
+      if (txDocSnap.exists()) {
+        const status = txDocSnap.data().status;
+
+        if (status === "pending") {
+          await updateDoc(txRef, {
+            status: "cancelled",
+          });
+        }
+      }
+
+      dispatch(setOrderStateCancelled(order, today));
+      alert("Successfully cancelled an order");
+    } catch (error) {
+      console.log(error);
+      alert("There is an error cancelling the order");
+    }
+
+    dispatch(orderStatusUpdatingChange(false));
   };
 };
