@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
@@ -172,7 +173,12 @@ class Orders extends Component {
                           1}
                       </td>
                       <td>
-                        {order?.storeData?.name + " | " + order?.reference}
+                        <Link
+                          to={`/orders/invoice/${order.reference}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          {order?.storeData?.name + " | " + order?.reference}
+                        </Link>
                       </td>
                       <td>
                         {order?.userData?.firstName +

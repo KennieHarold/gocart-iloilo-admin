@@ -10,6 +10,11 @@ import Button from "react-bootstrap/Button";
 import { logout } from "../../actions/AuthAction";
 
 class SidebarWrappper extends Component {
+  getActive = (item) => {
+    const actualPath = this.props.pathName.split("/");
+    return actualPath[1] === item.path.slice(1) ? "#007bff" : "gray";
+  };
+
   render() {
     const { logout } = this.props;
 
@@ -90,8 +95,7 @@ class SidebarWrappper extends Component {
                       flexDirection: "column",
                       alignItems: "center",
                       cursor: "pointer",
-                      color:
-                        this.props.pathName === item.path ? "#007bff" : "gray",
+                      color: this.getActive(item),
                     }}
                   >
                     {item.icon}
