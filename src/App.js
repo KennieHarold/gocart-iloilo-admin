@@ -20,6 +20,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Users from "./components/Users";
 import Orders from "./components/Orders";
+import Reports from "./components/Reports";
 
 const NoMatch = () => <Redirect to="/" />;
 
@@ -48,6 +49,7 @@ class App extends Component {
               <PrivateRoute path="/dashboard" component={Dashboard} />
               <PrivateRoute path="/users" component={Users} />
               <PrivateRoute path="/orders" component={Orders} />
+              <PrivateRoute path="/reports" component={Reports} />
               <Route component={NoMatch} />
             </Switch>
           </Router>

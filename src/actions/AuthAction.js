@@ -1,12 +1,22 @@
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 import {
   AUTH_RESET_STATE,
   EMAIL_CHANGE,
   PASSWORD_CHANGE,
   SUCCESS_LOGIN,
 } from "./actionTypes/authTypes";
-import { screenLoadingChange, authLoadingChange } from "./LoaderAction";
+import {
+  screenLoadingChange,
+  authLoadingChange,
+  loaderResetState,
+} from "./LoaderAction";
+import { orderResetState } from "./OrderAction";
+import { userResetState } from "./UserAction";
 
 export const authResetState = () => {
   return {
@@ -69,5 +79,21 @@ export const checkLoggedIn = () => {
         dispatch(authLoadingChange(false));
       }
     });
+  };
+};
+
+export const logout = () => {
+  return (dispatch) => {
+    signOut(auth)
+      .then(() => {
+        dispatch(authResetState());
+        dispatch(loaderResetState());
+        dispatch(orderResetState());
+        dispatch(userResetState());
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("There is an error signing out");
+      });
   };
 };

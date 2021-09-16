@@ -24,7 +24,10 @@ const LoaderReducer = (state = initialState, action) => {
       };
 
     case LOADER_RESET_STATE:
-      return initialState;
+      return {
+        ...initialState,
+        authLoading: false,
+      };
 
     default:
       return state;

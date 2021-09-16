@@ -1,12 +1,18 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import logo from "../../assets/app-icon.png";
 import { AiOutlineDashboard, AiOutlineBook } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import Button from "react-bootstrap/Button";
+import { logout } from "../../actions/AuthAction";
 
 class SidebarWrappper extends Component {
   render() {
+    const { logout } = this.props;
+
     const items = [
       {
         key: "item-dashboard",
@@ -25,6 +31,14 @@ class SidebarWrappper extends Component {
         label: "Orders",
         path: "/orders",
         icon: <AiOutlineBook style={{ fontSize: 28, marginBottom: 3 }} />,
+      },
+      {
+        key: "item-reports",
+        label: "Reports",
+        path: "/reports",
+        icon: (
+          <HiOutlineDocumentReport style={{ fontSize: 28, marginBottom: 3 }} />
+        ),
       },
     ];
 
@@ -45,38 +59,55 @@ class SidebarWrappper extends Component {
             alignItems: "center",
             display: "flex",
             flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
-          <Image
-            src={logo}
-            rounded
-            style={{ width: 60, height: 60, marginTop: 25, marginBottom: 25 }}
-          />
-          <ul className="list-group w-100" style={{ borderRadius: 0 }}>
-            {items.map((item) => (
-              <NavLink
-                key={item.key}
-                exact
-                to={item.path}
-                style={{ textDecoration: "none" }}
-              >
-                <li
-                  className="list-group-item sidebar-item"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    color:
-                      this.props.pathName === item.path ? "#007bff" : "gray",
-                  }}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              src={logo}
+              rounded
+              style={{ width: 60, height: 60, marginTop: 25, marginBottom: 25 }}
+            />
+            <ul className="list-group w-100" style={{ borderRadius: 0 }}>
+              {items.map((item) => (
+                <NavLink
+                  key={item.key}
+                  exact
+                  to={item.path}
+                  style={{ textDecoration: "none" }}
                 >
-                  {item.icon}
-                  <div>{item.label}</div>
-                </li>
-              </NavLink>
-            ))}
-          </ul>
+                  <li
+                    className="list-group-item sidebar-item"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      color:
+                        this.props.pathName === item.path ? "#007bff" : "gray",
+                    }}
+                  >
+                    {item.icon}
+                    <div>{item.label}</div>
+                  </li>
+                </NavLink>
+              ))}
+            </ul>
+          </div>
+          <Button
+            onClick={() => logout()}
+            variant="secondary"
+            className="m-3 w-75"
+          >
+            Logout
+          </Button>
         </div>
         <div className="p-4" style={{ background: "#F2F7FA", width: "100%" }}>
           {this.props.children}
@@ -86,4 +117,4 @@ class SidebarWrappper extends Component {
   }
 }
 
-export default SidebarWrappper;
+export default connect(null, { logout })(SidebarWrappper);
