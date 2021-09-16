@@ -1,13 +1,13 @@
 import {
   ADD_USER,
-  LOADING_CHANGE,
+  USER_LOADING_CHANGE,
   USER_RESET_STATE,
-  REGISTERED_COUNT_CHANGE,
-  CURRENT_PAGE_CHANGE,
+  USER_REGISTERED_COUNT_CHANGE,
+  USER_CURRENT_PAGE_CHANGE,
   USERS_PAGE_LOADED_CHANGE,
-  INCREMENT_DECREMENT_PAGE,
+  USER_INCREMENT_DECREMENT_PAGE,
   CLEAR_USER,
-  TABLE_LOADING_CHANGE,
+  USER_TABLE_LOADING_CHANGE,
 } from "./actionTypes/userTypes";
 import { usersCollection, usersCounter } from "../firebase";
 import {
@@ -29,7 +29,7 @@ export const addUser = (user) => {
 
 export const loadingChange = (payload) => {
   return {
-    type: LOADING_CHANGE,
+    type: USER_LOADING_CHANGE,
     payload,
   };
 };
@@ -42,14 +42,14 @@ export const userResetState = () => {
 
 export const registeredCountChange = (value) => {
   return {
-    type: REGISTERED_COUNT_CHANGE,
+    type: USER_REGISTERED_COUNT_CHANGE,
     value,
   };
 };
 
 export const currentPageChange = (page) => {
   return {
-    type: CURRENT_PAGE_CHANGE,
+    type: USER_CURRENT_PAGE_CHANGE,
     page,
   };
 };
@@ -89,25 +89,25 @@ export const getRegisteredUsersCount = () => {
 
 export const incrementDecrementPage = (value) => {
   return {
-    type: INCREMENT_DECREMENT_PAGE,
+    type: USER_INCREMENT_DECREMENT_PAGE,
     value,
   };
 };
 
 export const prevNextCurrentPage = (ic) => {
   return (dispatch, getState) => {
-    const { currentPage, totalPage } = getState().user;
+    const { userCurrentPage, userTotalPage } = getState().user;
 
     if (ic === -1) {
       //  Decrement or Previous
-      if (currentPage > 1) {
-        dispatch(paginateUsers(currentPage - 1));
+      if (userCurrentPage > 1) {
+        dispatch(paginateUsers(userCurrentPage - 1));
         dispatch(incrementDecrementPage(ic));
       }
     } else {
       //  Increment or Next
-      if (currentPage < totalPage) {
-        dispatch(paginateUsers(currentPage + 1));
+      if (userCurrentPage < userTotalPage) {
+        dispatch(paginateUsers(userCurrentPage + 1));
         dispatch(incrementDecrementPage(ic));
       }
     }
@@ -116,9 +116,9 @@ export const prevNextCurrentPage = (ic) => {
 
 export const jumpPage = (page) => {
   return (dispatch, getState) => {
-    const { totalPage } = getState().user;
+    const { userTotalPage } = getState().user;
 
-    if (page >= 1 && page <= totalPage) {
+    if (page >= 1 && page <= userTotalPage) {
       dispatch(paginateUsers(page));
       dispatch(currentPageChange(page));
     }
@@ -133,7 +133,7 @@ export const clearUser = () => {
 
 export const tableLoadingChange = (payload) => {
   return {
-    type: TABLE_LOADING_CHANGE,
+    type: USER_TABLE_LOADING_CHANGE,
     payload,
   };
 };

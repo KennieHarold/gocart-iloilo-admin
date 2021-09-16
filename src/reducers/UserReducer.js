@@ -1,26 +1,26 @@
 import {
   ADD_USER,
-  LOADING_CHANGE,
+  USER_LOADING_CHANGE,
   USER_RESET_STATE,
-  REGISTERED_COUNT_CHANGE,
-  CURRENT_PAGE_CHANGE,
+  USER_REGISTERED_COUNT_CHANGE,
+  USER_CURRENT_PAGE_CHANGE,
   USERS_PAGE_LOADED_CHANGE,
-  INCREMENT_DECREMENT_PAGE,
+  USER_INCREMENT_DECREMENT_PAGE,
   CLEAR_USER,
-  TABLE_LOADING_CHANGE,
+  USER_TABLE_LOADING_CHANGE,
 } from "../actions/actionTypes/userTypes";
 import { CONST_USER_PAGE_LIMIT } from "../utils/constants";
 
 const initialState = {
   users: [],
-  loading: false, // Main loading in users page
-  tableLoading: false,
+  userLoading: false, // Main loading in users page
+  userTableLoading: false,
   usersPageLoaded: false,
-  counters: {
+  userCounters: {
     registered: 0,
   },
-  currentPage: 1,
-  totalPage: 1,
+  userCurrentPage: 1,
+  userTotalPage: 1,
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -45,26 +45,26 @@ const UserReducer = (state = initialState, action) => {
         users: [],
       };
 
-    case LOADING_CHANGE:
+    case USER_LOADING_CHANGE:
       return {
         ...state,
-        loading: action.payload,
+        userLoading: action.payload,
       };
 
-    case TABLE_LOADING_CHANGE:
+    case USER_TABLE_LOADING_CHANGE:
       return {
         ...state,
-        tableLoading: action.payload,
+        userTableLoading: action.payload,
       };
 
-    case REGISTERED_COUNT_CHANGE:
+    case USER_REGISTERED_COUNT_CHANGE:
       return {
         ...state,
-        counters: {
-          ...state.counters,
+        userCounters: {
+          ...state.userCounters,
           registered: action.value,
         },
-        totalPage: Math.ceil(action.value / CONST_USER_PAGE_LIMIT),
+        userTotalPage: Math.ceil(action.value / CONST_USER_PAGE_LIMIT),
       };
 
     case USERS_PAGE_LOADED_CHANGE:
@@ -73,16 +73,16 @@ const UserReducer = (state = initialState, action) => {
         usersPageLoaded: action.payload,
       };
 
-    case CURRENT_PAGE_CHANGE:
+    case USER_CURRENT_PAGE_CHANGE:
       return {
         ...state,
-        currentPage: action.page,
+        userCurrentPage: action.page,
       };
 
-    case INCREMENT_DECREMENT_PAGE:
+    case USER_INCREMENT_DECREMENT_PAGE:
       return {
         ...state,
-        currentPage: state.currentPage + action.value,
+        userCurrentPage: state.userCurrentPage + action.value,
       };
 
     case USER_RESET_STATE:

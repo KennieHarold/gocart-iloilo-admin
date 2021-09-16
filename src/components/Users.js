@@ -34,16 +34,16 @@ class Users extends Component {
   };
 
   getPagination = () => {
-    const { totalPage, currentPage, prevNextCurrentPage, jumpPage } =
+    const { userTotalPage, userCurrentPage, prevNextCurrentPage, jumpPage } =
       this.props;
 
     let items = [];
-    for (let number = 1; number <= totalPage; number++) {
+    for (let number = 1; number <= userTotalPage; number++) {
       items.push(
         <Pagination.Item
           onClick={() => jumpPage(number)}
           key={number}
-          active={number === currentPage}
+          active={number === userCurrentPage}
         >
           {number}
         </Pagination.Item>
@@ -54,19 +54,20 @@ class Users extends Component {
       <Pagination className="mt-5">
         <Pagination.Prev
           onClick={() => prevNextCurrentPage(-1)}
-          disabled={currentPage === 1}
+          disabled={userCurrentPage === 1}
         />
         {items}
         <Pagination.Next
           onClick={() => prevNextCurrentPage(1)}
-          disabled={currentPage === totalPage}
+          disabled={userCurrentPage === userTotalPage}
         />
       </Pagination>
     );
   };
 
   render() {
-    const { users, loading, tableLoading, currentPage } = this.props;
+    const { users, userLoading, userTableLoading, userCurrentPage } =
+      this.props;
 
     const theads = [
       {
@@ -99,7 +100,7 @@ class Users extends Component {
         >
           <h5>Users</h5>
         </div>
-        {loading ? (
+        {userLoading ? (
           <div className="w-100 d-flex justify-content-center">
             <Spinner animation="border" variant="primary" />
           </div>
@@ -112,7 +113,7 @@ class Users extends Component {
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
           >
-            {tableLoading ? (
+            {userTableLoading ? (
               <div className="w-100 d-flex justify-content-center mt-4">
                 <Spinner animation="border" variant="primary" />
               </div>
@@ -129,7 +130,9 @@ class Users extends Component {
                   {users.map((user, index) => (
                     <tr key={user.id} style={{ cursor: "pointer" }}>
                       <td>
-                        {(currentPage - 1) * CONST_USER_PAGE_LIMIT + index + 1}
+                        {(userCurrentPage - 1) * CONST_USER_PAGE_LIMIT +
+                          index +
+                          1}
                       </td>
                       <td>
                         <div>{`${user?.firstName} ${user?.lastName} | ${user?.email}`}</div>
@@ -163,22 +166,20 @@ class Users extends Component {
 const mapStateToProps = (state) => {
   const {
     users,
-    loading,
-    currentPage,
-    counters,
-    totalPage,
+    userLoading,
+    userCurrentPage,
+    userTotalPage,
     usersPageLoaded,
-    tableLoading,
+    userTableLoading,
   } = state.user;
 
   return {
     users,
-    loading,
-    currentPage,
-    counters,
-    totalPage,
+    userLoading,
+    userCurrentPage,
+    userTotalPage,
     usersPageLoaded,
-    tableLoading,
+    userTableLoading,
   };
 };
 

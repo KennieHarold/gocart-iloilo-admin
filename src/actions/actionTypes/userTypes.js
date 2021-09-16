@@ -1,9 +1,9 @@
-export const ADD_USER = "add_uder";
-export const LOADING_CHANGE = "loading_change";
+export const ADD_USER = "add_user";
+export const USER_LOADING_CHANGE = "user_loading_change";
 export const USER_RESET_STATE = "user_reset_state";
-export const REGISTERED_COUNT_CHANGE = "registered_count_page";
-export const CURRENT_PAGE_CHANGE = "current_page_change";
+export const USER_REGISTERED_COUNT_CHANGE = "user_registered_count_page";
+export const USER_CURRENT_PAGE_CHANGE = "user_current_page_change";
 export const USERS_PAGE_LOADED_CHANGE = "users_page_loaded";
-export const INCREMENT_DECREMENT_PAGE = "increment_decrement_page";
+export const USER_INCREMENT_DECREMENT_PAGE = "user_increment_decrement_page";
 export const CLEAR_USER = "clear_user";
-export const TABLE_LOADING_CHANGE = "table_loading_change";
+export const USER_TABLE_LOADING_CHANGE = "user_table_loading_change";

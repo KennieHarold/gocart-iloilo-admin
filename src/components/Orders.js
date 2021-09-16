@@ -54,16 +54,16 @@ class Orders extends Component {
   };
 
   getPagination = () => {
-    const { totalPage, currentPage, prevNextCurrentPage, jumpPage } =
+    const { orderTotalPage, orderCurrentPage, prevNextCurrentPage, jumpPage } =
       this.props;
 
     let items = [];
-    for (let number = 1; number <= totalPage; number++) {
+    for (let number = 1; number <= orderTotalPage; number++) {
       items.push(
         <Pagination.Item
           onClick={() => jumpPage(number)}
           key={number}
-          active={number === currentPage}
+          active={number === orderCurrentPage}
         >
           {number}
         </Pagination.Item>
@@ -74,19 +74,20 @@ class Orders extends Component {
       <Pagination className="mt-5">
         <Pagination.Prev
           onClick={() => prevNextCurrentPage(-1)}
-          disabled={currentPage === 1}
+          disabled={orderCurrentPage === 1}
         />
         {items}
         <Pagination.Next
           onClick={() => prevNextCurrentPage(1)}
-          disabled={currentPage === totalPage}
+          disabled={orderCurrentPage === orderTotalPage}
         />
       </Pagination>
     );
   };
 
   render() {
-    const { orders, loading, tableLoading, currentPage } = this.props;
+    const { orders, orderLoading, orderTableLoading, orderCurrentPage } =
+      this.props;
 
     const theads = [
       {
@@ -127,7 +128,7 @@ class Orders extends Component {
         >
           <h5>Orders</h5>
         </div>
-        {loading ? (
+        {orderLoading ? (
           <div className="w-100 d-flex justify-content-center">
             <Spinner animation="border" variant="primary" />
           </div>
@@ -140,7 +141,7 @@ class Orders extends Component {
               boxShadow: "1px 1px 5px 1px lightgray",
             }}
           >
-            {tableLoading ? (
+            {orderTableLoading ? (
               <div className="w-100 d-flex justify-content-center mt-4">
                 <Spinner animation="border" variant="primary" />
               </div>
@@ -157,7 +158,9 @@ class Orders extends Component {
                   {orders.map((order, index) => (
                     <tr key={order.id} style={{ cursor: "pointer" }}>
                       <td>
-                        {(currentPage - 1) * CONST_ORDER_PAGE_LIMIT + index + 1}
+                        {(orderCurrentPage - 1) * CONST_ORDER_PAGE_LIMIT +
+                          index +
+                          1}
                       </td>
                       <td>
                         {order?.storeData?.name + " | " + order?.reference}
@@ -211,22 +214,20 @@ class Orders extends Component {
 const mapStateToProps = (state) => {
   const {
     orders,
-    loading,
-    currentPage,
-    counters,
-    totalPage,
+    orderLoading,
+    orderCurrentPage,
+    orderTotalPage,
     ordersPageLoaded,
-    tableLoading,
+    orderTableLoading,
   } = state.order;
 
   return {
     orders,
-    loading,
-    currentPage,
-    counters,
-    totalPage,
+    orderLoading,
+    orderCurrentPage,
+    orderTotalPage,
     ordersPageLoaded,
-    tableLoading,
+    orderTableLoading,
   };
 };
 

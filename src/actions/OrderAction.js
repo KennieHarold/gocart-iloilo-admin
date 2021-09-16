@@ -1,11 +1,11 @@
 import {
   ADD_ORDER,
   ORDER_RESET_STATE,
-  LOADING_CHANGE,
-  CURRENT_PAGE_CHANGE,
-  INCREMENT_DECREMENT_PAGE,
+  ORDER_LOADING_CHANGE,
+  ORDER_CURRENT_PAGE_CHANGE,
+  ORDER_INCREMENT_DECREMENT_PAGE,
   CLEAR_ORDERS,
-  TABLE_LOADING_CHANGE,
+  ORDER_TABLE_LOADING_CHANGE,
   ALL_ORDERS_COUNT_CHANGE,
   ORDERS_PAGE_LOADED_CHANGE,
 } from "./actionTypes/orderTypes";
@@ -81,7 +81,7 @@ export const orderResetState = () => {
 
 export const loadingChange = (payload) => {
   return {
-    type: LOADING_CHANGE,
+    type: ORDER_LOADING_CHANGE,
     payload,
   };
 };
@@ -130,7 +130,7 @@ export const getOrdersFromDb = () => {
 
 export const currentPageChange = (page) => {
   return {
-    type: CURRENT_PAGE_CHANGE,
+    type: ORDER_CURRENT_PAGE_CHANGE,
     page,
   };
 };
@@ -155,25 +155,25 @@ export const getAllOrdersCount = () => {
 
 export const incrementDecrementPage = (value) => {
   return {
-    type: INCREMENT_DECREMENT_PAGE,
+    type: ORDER_INCREMENT_DECREMENT_PAGE,
     value,
   };
 };
 
 export const prevNextCurrentPage = (ic) => {
   return (dispatch, getState) => {
-    const { currentPage, totalPage } = getState().order;
+    const { orderCurrentPage, orderTotalPage } = getState().order;
 
     if (ic === -1) {
       //  Decrement or Previous
-      if (currentPage > 1) {
-        dispatch(paginateOrders(currentPage - 1));
+      if (orderCurrentPage > 1) {
+        dispatch(paginateOrders(orderCurrentPage - 1));
         dispatch(incrementDecrementPage(ic));
       }
     } else {
       //  Increment or Next
-      if (currentPage < totalPage) {
-        dispatch(paginateOrders(currentPage + 1));
+      if (orderCurrentPage < orderTotalPage) {
+        dispatch(paginateOrders(orderCurrentPage + 1));
         dispatch(incrementDecrementPage(ic));
       }
     }
@@ -182,9 +182,9 @@ export const prevNextCurrentPage = (ic) => {
 
 export const jumpPage = (page) => {
   return (dispatch, getState) => {
-    const { totalPage } = getState().order;
+    const { orderTotalPage } = getState().order;
 
-    if (page >= 1 && page <= totalPage) {
+    if (page >= 1 && page <= orderTotalPage) {
       dispatch(paginateOrders(page));
       dispatch(currentPageChange(page));
     }
@@ -199,7 +199,7 @@ export const clearOrders = () => {
 
 export const tableLoadingChange = (payload) => {
   return {
-    type: TABLE_LOADING_CHANGE,
+    type: ORDER_TABLE_LOADING_CHANGE,
     payload,
   };
 };

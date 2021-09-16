@@ -1,11 +1,11 @@
 import {
   ADD_ORDER,
-  LOADING_CHANGE,
+  ORDER_LOADING_CHANGE,
   ORDER_RESET_STATE,
-  CURRENT_PAGE_CHANGE,
-  INCREMENT_DECREMENT_PAGE,
+  ORDER_CURRENT_PAGE_CHANGE,
+  ORDER_INCREMENT_DECREMENT_PAGE,
   CLEAR_ORDERS,
-  TABLE_LOADING_CHANGE,
+  ORDER_TABLE_LOADING_CHANGE,
   ALL_ORDERS_COUNT_CHANGE,
   ORDERS_PAGE_LOADED_CHANGE,
 } from "../actions/actionTypes/orderTypes";
@@ -13,14 +13,14 @@ import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
 const initialState = {
   orders: [],
-  loading: false,
-  tableLoading: false,
+  orderLoading: false,
+  orderTableLoading: false,
   ordersPageLoaded: false,
-  counters: {
+  orderCounters: {
     allOrders: 0,
   },
-  currentPage: 1,
-  totalPage: 1,
+  orderCurrentPage: 1,
+  orderTotalPage: 1,
 };
 
 const OrderReducer = (state = initialState, action) => {
@@ -39,16 +39,16 @@ const OrderReducer = (state = initialState, action) => {
         return state;
       }
 
-    case CURRENT_PAGE_CHANGE:
+    case ORDER_CURRENT_PAGE_CHANGE:
       return {
         ...state,
-        currentPage: action.page,
+        orderCurrentPage: action.page,
       };
 
-    case INCREMENT_DECREMENT_PAGE:
+    case ORDER_INCREMENT_DECREMENT_PAGE:
       return {
         ...state,
-        currentPage: state.currentPage + action.value,
+        orderCurrentPage: state.orderCurrentPage + action.value,
       };
 
     case CLEAR_ORDERS:
@@ -63,26 +63,26 @@ const OrderReducer = (state = initialState, action) => {
         ordersPageLoaded: action.payload,
       };
 
-    case TABLE_LOADING_CHANGE:
+    case ORDER_TABLE_LOADING_CHANGE:
       return {
         ...state,
-        tableLoading: action.payload,
+        orderTableLoading: action.payload,
       };
 
     case ALL_ORDERS_COUNT_CHANGE:
       return {
         ...state,
-        counters: {
-          ...state.counters,
+        orderCounters: {
+          ...state.orderCounters,
           allOrders: action.value,
         },
-        totalPage: Math.ceil(action.value / CONST_ORDER_PAGE_LIMIT),
+        orderTotalPage: Math.ceil(action.value / CONST_ORDER_PAGE_LIMIT),
       };
 
-    case LOADING_CHANGE:
+    case ORDER_LOADING_CHANGE:
       return {
         ...state,
-        loading: action.payload,
+        orderLoading: action.payload,
       };
 
     case ORDER_RESET_STATE:
