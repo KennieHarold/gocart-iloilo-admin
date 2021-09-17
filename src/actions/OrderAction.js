@@ -11,6 +11,8 @@ import {
   ORDER_STATUS_UPDATING_CHANGE,
   SET_ORDER_STATE_DELIVERED,
   SET_ORDER_STATE_CANCELLED,
+  INVOICE_SELECT,
+  CLEAR_SELECTED_INVOICE,
 } from "./actionTypes/orderTypes";
 import {
   ordersCollection,
@@ -369,5 +371,18 @@ export const setOrderCancelled = (order) => {
     }
 
     dispatch(orderStatusUpdatingChange(false));
+  };
+};
+
+export const invoiceSelect = (invoice) => {
+  return {
+    type: INVOICE_SELECT,
+    invoice,
+  };
+};
+
+export const clearSelectedInvoice = () => {
+  return {
+    type: CLEAR_SELECTED_INVOICE,
   };
 };

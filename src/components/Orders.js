@@ -20,6 +20,7 @@ import {
   jumpPage,
   setOrderDelivered,
   setOrderCancelled,
+  invoiceSelect,
 } from "../actions/OrderAction";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -97,6 +98,7 @@ class Orders extends Component {
       orderStatusUpdating,
       setOrderDelivered,
       setOrderCancelled,
+      invoiceSelect,
     } = this.props;
 
     const theads = [
@@ -174,6 +176,7 @@ class Orders extends Component {
                       </td>
                       <td>
                         <Link
+                          onClick={() => invoiceSelect(order)}
                           to={`/orders/invoice/${order.reference}`}
                           style={{ textDecoration: "none" }}
                         >
@@ -265,4 +268,5 @@ export default connect(mapStateToProps, {
   jumpPage,
   setOrderDelivered,
   setOrderCancelled,
+  invoiceSelect,
 })(Orders);

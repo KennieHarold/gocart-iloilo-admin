@@ -11,6 +11,8 @@ import {
   ORDER_STATUS_UPDATING_CHANGE,
   SET_ORDER_STATE_DELIVERED,
   SET_ORDER_STATE_CANCELLED,
+  INVOICE_SELECT,
+  CLEAR_SELECTED_INVOICE,
 } from "../actions/actionTypes/orderTypes";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -25,6 +27,7 @@ const initialState = {
   orderCurrentPage: 1,
   orderTotalPage: 1,
   orderStatusUpdating: false,
+  selectedInvoice: undefined,
 };
 
 const OrderReducer = (state = initialState, action) => {
@@ -89,6 +92,18 @@ const OrderReducer = (state = initialState, action) => {
       return {
         ...state,
         orderStatusUpdating: action.payload,
+      };
+
+    case INVOICE_SELECT:
+      return {
+        ...state,
+        selectedInvoice: action.invoice,
+      };
+
+    case CLEAR_SELECTED_INVOICE:
+      return {
+        ...state,
+        selectedInvoice: undefined,
       };
 
     case SET_ORDER_STATE_DELIVERED:

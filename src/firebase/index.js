@@ -12,6 +12,7 @@ export const usersDb = "liveUsers";
 export const ordersDb = "liveOrders";
 export const transactionsDb = "liveTransactions";
 export const storesDb = "liveStores";
+export const productsDb = "liveProducts";
 
 //  Collections
 export const usersCollection = collection(db, usersDb);
