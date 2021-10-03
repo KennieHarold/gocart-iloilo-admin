@@ -23,3 +23,4 @@ export const storesCollection = collection(db, storesDb);
 //  Counters
 export const usersCounter = doc(db, "liveCounters", "users");
 export const ordersCounters = doc(db, "liveCounters", "orders");
+export const storesCounters = doc(db, "liveCounters", "stores");

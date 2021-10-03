@@ -22,6 +22,7 @@ import Users from "./components/Users";
 import Orders from "./components/Orders";
 import Reports from "./components/Reports";
 import Invoice from "./components/Invoice";
+import Stores from "./components/Stores";
 
 const NoMatch = () => <Redirect to="/" />;
 
@@ -51,7 +52,9 @@ class App extends Component {
               <PrivateRoute exact path="/users" component={Users} />
               <PrivateRoute exact path="/orders" component={Orders} />
               <PrivateRoute exact path="/reports" component={Reports} />
+              <PrivateRoute exact path="/stores" component={Stores} />
               <PrivateRoute
+                exact
                 path="/orders/invoice/:reference"
                 component={Invoice}
               />

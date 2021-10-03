@@ -3,10 +3,12 @@ import AuthReducer from "./AuthReducer";
 import LoaderReducer from "./LoaderReducer";
 import UserReducer from "./UserReducer";
 import OrderReducer from "./OrderReducer";
+import StoreReducer from "./StoreReducer";
 
 export default combineReducers({
   auth: AuthReducer,
   loader: LoaderReducer,
   user: UserReducer,
   order: OrderReducer,
+  store: StoreReducer,
 });
