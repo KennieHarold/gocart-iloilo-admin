@@ -23,6 +23,7 @@ import Orders from "./components/Orders";
 import Reports from "./components/Reports";
 import Invoice from "./components/Invoice";
 import Stores from "./components/Stores";
+import CreateStore from "./components/CreateStore";
 
 const NoMatch = () => <Redirect to="/" />;
 
@@ -53,6 +54,11 @@ class App extends Component {
               <PrivateRoute exact path="/orders" component={Orders} />
               <PrivateRoute exact path="/reports" component={Reports} />
               <PrivateRoute exact path="/stores" component={Stores} />
+              <PrivateRoute
+                exact
+                path="/stores/create"
+                component={CreateStore}
+              />
               <PrivateRoute
                 exact
                 path="/orders/invoice/:reference"

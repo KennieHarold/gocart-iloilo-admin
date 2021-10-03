@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import SidebarWrapper from "./SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
@@ -106,8 +108,16 @@ class Stores extends Component {
               padding: 15,
               borderRadius: 10,
               boxShadow: "1px 1px 5px 1px lightgray",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
+            <Link
+              to={`/stores/create`}
+              style={{ alignSelf: "flex-end", marginBottom: 25 }}
+            >
+              <Button style={{ width: 125 }}>Create Store</Button>
+            </Link>
             {storeTableLoading ? (
               <div className="w-100 d-flex justify-content-center mt-4">
                 <Spinner animation="border" variant="primary" />

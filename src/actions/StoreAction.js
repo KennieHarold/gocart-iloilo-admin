@@ -8,6 +8,7 @@ import {
   STORE_TABLE_LOADING_CHANGE,
   ALL_STORES_COUNT_CHANGE,
   STORES_PAGE_LOADED_CHANGE,
+  STORE_CREATING_CHANGE,
 } from "./actionTypes/storeTypes";
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
 import { storesCollection, storesCounters } from "../firebase";
@@ -20,7 +21,7 @@ import {
   limit,
   startAfter,
   doc,
-  updateDoc,
+  addDoc,
 } from "firebase/firestore";
 
 export const addStore = (store) => {
@@ -80,6 +81,13 @@ export const allStoresCountChange = (value) => {
 export const storesPageLoadedChange = (payload) => {
   return {
     type: STORES_PAGE_LOADED_CHANGE,
+    payload,
+  };
+};
+
+export const storeCreatingChange = (payload) => {
+  return {
+    type: STORE_CREATING_CHANGE,
     payload,
   };
 };
@@ -185,5 +193,44 @@ export const paginateStores = (page) => {
     }
 
     dispatch(storeTableLoadingChange(false));
+  };
+};
+
+export const createNewStore = (data) => {
+  return async (dispatch) => {
+    dispatch(storeCreatingChange(true));
+
+    const store = {
+      name: data.name.trim(),
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
+      photoUri: "",
+      isDeleted: false,
+      description: data.description.trim(),
+      address: {
+        formattedAddress: data.address.formattedAddress.trim(),
+        latitude:
+          data.address.latitude && data.address.latitude.trim() !== ""
+            ? parseInt(data.address.latitude, 10)
+            : 0,
+        longitude:
+          data.address.longitude && data.address.longitude.trim() !== ""
+            ? parseInt(data.address.longitude, 10)
+            : 0,
+      },
+    };
+
+    const docRef = await addDoc(storesCollection, store);
+
+    dispatch(
+      addStore({
+        ...store,
+        id: docRef.id,
+      })
+    );
+
+    alert("Successfully added store");
+
+    dispatch(storeCreatingChange(false));
   };
 };

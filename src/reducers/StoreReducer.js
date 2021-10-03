@@ -8,6 +8,7 @@ import {
   STORE_TABLE_LOADING_CHANGE,
   ALL_STORES_COUNT_CHANGE,
   STORES_PAGE_LOADED_CHANGE,
+  STORE_CREATING_CHANGE,
 } from "../actions/actionTypes/storeTypes";
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
 
@@ -21,6 +22,7 @@ const initialState = {
   },
   storeCurrentPage: 1,
   storeTotalPage: 1,
+  storeCreating: false,
 };
 
 const StoreReducer = (state = initialState, action) => {
@@ -83,6 +85,12 @@ const StoreReducer = (state = initialState, action) => {
       return {
         ...state,
         storesPageLoaded: action.payload,
+      };
+
+    case STORE_CREATING_CHANGE:
+      return {
+        ...state,
+        storeCreating: action.payload,
       };
 
     case STORE_RESET_STATE:
