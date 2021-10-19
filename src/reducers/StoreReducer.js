@@ -14,15 +14,17 @@ import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
 
 const initialState = {
   stores: [],
-  storeLoading: false,
-  storeTableLoading: false,
   storesPageLoaded: false,
   storeCounters: {
     allStores: 0,
   },
   storeCurrentPage: 1,
   storeTotalPage: 1,
+
+  //  Loaders
   storeCreating: false,
+  storeLoading: false,
+  storeTableLoading: false,
 };
 
 const StoreReducer = (state = initialState, action) => {

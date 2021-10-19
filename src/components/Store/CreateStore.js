@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import SidebarWrapper from "../SharedComponents/SidebarWrapper";
+import Upload from "../SharedComponents/Upload";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { createNewStore } from "../../actions/StoreAction";
@@ -98,6 +99,9 @@ class CreateStore extends Component {
               style={{ height: "100px" }}
             />
           </Form.Group>
+
+          <label className="mb-3">Upload Image</label>
+          <Upload />
 
           <Button disabled={storeCreating} variant="primary" type="submit">
             Submit
