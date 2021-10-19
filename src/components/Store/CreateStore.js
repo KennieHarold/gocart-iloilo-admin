@@ -5,6 +5,7 @@ import Upload from "../SharedComponents/Upload";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { createNewStore } from "../../actions/StoreAction";
+import { uploadResetState } from "../../actions/UploadAction";
 
 class CreateStore extends Component {
   handleSubmit = async (e) => {
@@ -27,12 +28,14 @@ class CreateStore extends Component {
         description,
       };
 
-      await this.props.createNewStore(data);
+      await this.props.createNewStore(data, this.props.imageFile);
 
       //  Clear fields
       for (let i = 0; i <= 4; i++) {
         e.target[i].value = "";
       }
+
+      this.props.uploadResetState();
     } else {
       alert("Missing store name");
     }
@@ -114,10 +117,14 @@ class CreateStore extends Component {
 
 const mapStateToProps = (state) => {
   const { storeCreating } = state.store;
+  const { imageFile } = state.upload;
 
   return {
     storeCreating,
+    imageFile,
   };
 };
 
-export default connect(mapStateToProps, { createNewStore })(CreateStore);
+export default connect(mapStateToProps, { createNewStore, uploadResetState })(
+  CreateStore
+);

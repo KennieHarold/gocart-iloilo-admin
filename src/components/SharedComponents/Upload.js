@@ -1,9 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from "react-dropzone";
 import { ImFileEmpty } from "react-icons/im";
+import { setImageBinary, setImageFile } from "../../actions/UploadAction";
 
-function Upload() {
-  const [file, setFile] = useState(null);
+const Upload = () => {
+  const dispatch = useDispatch();
+  const [imageBinaryUrl] = useSelector((state) => {
+    return [state.upload.imageBinaryUrl];
+  });
 
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((tempFile) => {
@@ -19,7 +24,9 @@ function Upload() {
 
         if (allowedTypes.includes(tempFile.type)) {
           const binaryStr = reader.result;
-          setFile(binaryStr);
+
+          dispatch(setImageBinary(binaryStr));
+          dispatch(setImageFile(tempFile));
         } else {
           window.alert("Only jpg, jpeg, and png files are accepted");
         }
@@ -46,13 +53,13 @@ function Upload() {
       ) : (
         <p>Drag and drop some files here, or click to select files</p>
       )}
-      {file ? (
-        <img src={file} height="200" />
+      {imageBinaryUrl ? (
+        <img src={imageBinaryUrl} height="200" />
       ) : (
         <ImFileEmpty style={{ fontSize: 50, color: "lightgray" }} />
       )}
     </div>
   );
-}
+};
 
 export default Upload;

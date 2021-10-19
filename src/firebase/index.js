@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import firebaseConfig from "./firebaseConfig";
 
@@ -7,8 +8,11 @@ const env = process.env.REACT_APP_ENVIRONMENT;
 console.log(process.env.REACT_APP_ENVIRONMENT);
 
 export const firebaseApp = initializeApp(firebaseConfig);
+
+//  Builds
 export const auth = getAuth();
 export const db = getFirestore();
+export const storage = getStorage();
 
 //  DB
 export const usersDb = env === "production" ? "liveUsers" : "devUsers";

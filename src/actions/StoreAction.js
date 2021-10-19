@@ -11,7 +11,8 @@ import {
   STORE_CREATING_CHANGE,
 } from "./actionTypes/storeTypes";
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
-import { storesCollection, storesCounters } from "../firebase";
+import { storesCollection, storesCounters, storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   getDoc,
   getDocs,
@@ -196,40 +197,61 @@ export const paginateStores = (page) => {
   };
 };
 
-export const createNewStore = (data) => {
+const generateFileName = (fileType) => {
+  const now = new Date();
+
+  return `${now.getDate()}-${
+    now.getMonth() + 1
+  }-${now.getFullYear()}-${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.${fileType}`;
+};
+
+export const createNewStore = (data, imageFile) => {
   return async (dispatch) => {
     dispatch(storeCreatingChange(true));
 
-    const store = {
-      name: data.name.trim(),
-      dateCreated: new Date(),
-      dateUpdated: new Date(),
-      photoUri: "",
-      isDeleted: false,
-      description: data.description.trim(),
-      address: {
-        formattedAddress: data.address.formattedAddress.trim(),
-        latitude:
-          data.address.latitude && data.address.latitude.trim() !== ""
-            ? parseInt(data.address.latitude, 10)
-            : 0,
-        longitude:
-          data.address.longitude && data.address.longitude.trim() !== ""
-            ? parseInt(data.address.longitude, 10)
-            : 0,
-      },
-    };
+    try {
+      const fileType = imageFile.name.split(".")[1];
+      const imageLink = `Stores/${generateFileName(fileType)}`;
+      const storageRef = ref(storage, imageLink);
 
-    const docRef = await addDoc(storesCollection, store);
+      await uploadBytes(storageRef, imageFile);
 
-    dispatch(
-      addStore({
-        ...store,
-        id: docRef.id,
-      })
-    );
+      const downloadLink = await getDownloadURL(storageRef);
 
-    alert("Successfully added store");
+      const store = {
+        name: data.name.trim(),
+        dateCreated: new Date(),
+        dateUpdated: new Date(),
+        photoUri: downloadLink,
+        isDeleted: false,
+        description: data.description.trim(),
+        address: {
+          formattedAddress: data.address.formattedAddress.trim(),
+          latitude:
+            data.address.latitude && data.address.latitude.trim() !== ""
+              ? parseInt(data.address.latitude, 10)
+              : 0,
+          longitude:
+            data.address.longitude && data.address.longitude.trim() !== ""
+              ? parseInt(data.address.longitude, 10)
+              : 0,
+        },
+      };
+
+      const docRef = await addDoc(storesCollection, store);
+
+      dispatch(
+        addStore({
+          ...store,
+          id: docRef.id,
+        })
+      );
+
+      alert("Successfully added store");
+    } catch (error) {
+      console.log(error);
+      window.alert("There is an error creating store");
+    }
 
     dispatch(storeCreatingChange(false));
   };
