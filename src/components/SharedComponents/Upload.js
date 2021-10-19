@@ -54,7 +54,7 @@ const Upload = () => {
         <p>Drag and drop some files here, or click to select files</p>
       )}
       {imageBinaryUrl ? (
-        <img src={imageBinaryUrl} height="200" />
+        <img alt="" src={imageBinaryUrl} height="200" />
       ) : (
         <ImFileEmpty style={{ fontSize: 50, color: "lightgray" }} />
       )}

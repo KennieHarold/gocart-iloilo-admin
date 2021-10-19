@@ -160,7 +160,12 @@ class Stores extends Component {
                       </td>
                       <td>{store?.name}</td>
                       <td className="text-center">
-                        <img src={store?.photoUri} width="50" height="50" />
+                        <img
+                          alt=""
+                          src={store?.photoUri}
+                          width="50"
+                          height="50"
+                        />
                       </td>
                       <td>
                         {moment(this.parseTime(store?.dateCreated)).format(
