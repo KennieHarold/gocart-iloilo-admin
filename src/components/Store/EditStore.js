@@ -1,13 +1,26 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import SidebarWrapper from "../SharedComponents/SidebarWrapper";
-import Upload from "../SharedComponents/Upload";
+import { selectStore, updateStore } from "../../actions/StoreAction";
 import Form from "react-bootstrap/Form";
+import Upload from "../SharedComponents/Upload";
 import Button from "react-bootstrap/Button";
-import { createNewStore } from "../../actions/StoreAction";
+import { setImageBinary } from "../../actions/UploadAction";
 import { uploadResetState } from "../../actions/UploadAction";
 
-class CreateStore extends Component {
+class EditStore extends Component {
+  componentDidMount() {
+    this.props.setImageBinary(this.props.selectedStore?.photoUri);
+  }
+
+  componentWillUnmount() {
+    if (process.env.REACT_APP_ENVIRONMENT === "production") {
+      this.props.selectStore(null);
+    }
+
+    this.props.uploadResetState();
+  }
+
   handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,21 +41,26 @@ class CreateStore extends Component {
         description,
       };
 
-      await this.props.createNewStore(data, this.props.imageFile);
+      const validatedFile = this.props.imageBinaryUrl.includes("http")
+        ? null
+        : this.props.imageFile;
 
-      //  Clear fields
-      for (let i = 0; i <= 4; i++) {
-        e.target[i].value = "";
-      }
+      await this.props.updateStore(
+        this.props.selectedStore,
+        data,
+        validatedFile
+      );
 
       this.props.uploadResetState();
+
+      this.props.history.goBack();
     } else {
       alert("Missing store name");
     }
   };
 
   render() {
-    const { storeCreating } = this.props;
+    const { storeCreating, selectedStore } = this.props;
 
     return (
       <SidebarWrapper pathName={this.props.location.pathname}>
@@ -50,7 +68,7 @@ class CreateStore extends Component {
           className="w-100 pb-2 mb-4"
           style={{ borderBottom: "0.5px solid lightgray" }}
         >
-          <h5>Create Store</h5>
+          <h5>Edit Store</h5>
         </div>
         <Form
           onSubmit={this.handleSubmit}
@@ -65,6 +83,7 @@ class CreateStore extends Component {
           <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Label>Store name</Form.Label>
             <Form.Control
+              defaultValue={selectedStore?.name}
               disabled={storeCreating}
               type="text"
               placeholder="Store name"
@@ -74,18 +93,21 @@ class CreateStore extends Component {
           <Form.Group className="mb-3" controlId="formBasicAddress">
             <Form.Label>Address</Form.Label>
             <Form.Control
+              defaultValue={selectedStore?.address?.formattedAddress}
               disabled={storeCreating}
               className="mb-2"
               type="text"
               placeholder="Formatted Address"
             />
             <Form.Control
+              defaultValue={selectedStore?.address?.latitude}
               disabled={storeCreating}
               className="mb-2"
               type="number"
               placeholder="Latitude"
             />
             <Form.Control
+              defaultValue={selectedStore?.address?.longitude}
               disabled={storeCreating}
               className="mb-2"
               type="number"
@@ -96,6 +118,7 @@ class CreateStore extends Component {
           <Form.Group className="mb-3" controlId="formBasicDesc">
             <Form.Label>Description</Form.Label>
             <Form.Control
+              defaultValue={selectedStore?.description}
               disabled={storeCreating}
               as="textarea"
               placeholder="Description"
@@ -130,15 +153,20 @@ class CreateStore extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { storeCreating } = state.store;
-  const { imageFile } = state.upload;
+  const { storeCreating, selectedStore } = state.store;
+  const { imageBinaryUrl, imageFile } = state.upload;
 
   return {
     storeCreating,
+    selectedStore,
+    imageBinaryUrl,
     imageFile,
   };
 };
 
-export default connect(mapStateToProps, { createNewStore, uploadResetState })(
-  CreateStore
-);
+export default connect(mapStateToProps, {
+  selectStore,
+  setImageBinary,
+  updateStore,
+  uploadResetState,
+})(EditStore);

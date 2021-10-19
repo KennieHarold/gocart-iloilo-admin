@@ -15,6 +15,7 @@ import {
   getAllStoresCount,
   paginateStores,
   storesPageLoadedChange,
+  selectStore,
 } from "../../actions/StoreAction";
 
 class Stores extends Component {
@@ -66,6 +67,14 @@ class Stores extends Component {
     );
   };
 
+  parseTime = (time) => {
+    if (time.seconds) {
+      return time.seconds * 1000;
+    }
+
+    return time;
+  };
+
   render() {
     const theads = [
       {
@@ -83,6 +92,14 @@ class Stores extends Component {
       {
         key: "store-thead-created",
         label: "Date Created",
+      },
+      {
+        key: "store-thead-updated",
+        label: "Date Updated",
+      },
+      {
+        key: "store-thead-actions",
+        label: "Actions",
       },
     ];
 
@@ -116,7 +133,9 @@ class Stores extends Component {
               to={`/stores/create`}
               style={{ alignSelf: "flex-end", marginBottom: 25 }}
             >
-              <Button style={{ width: 125 }}>Create Store</Button>
+              <Button variant="success" style={{ width: 125 }}>
+                Create Store
+              </Button>
             </Link>
             {storeTableLoading ? (
               <div className="w-100 d-flex justify-content-center mt-4">
@@ -144,9 +163,25 @@ class Stores extends Component {
                         <img src={store?.photoUri} width="50" height="50" />
                       </td>
                       <td>
-                        {moment(store?.dateCreated?.seconds * 1000).format(
+                        {moment(this.parseTime(store?.dateCreated)).format(
                           "LL"
                         )}
+                      </td>
+                      <td>
+                        {moment(this.parseTime(store?.dateUpdated)).format(
+                          "LL"
+                        )}
+                      </td>
+                      <td style={{ width: 280 }}>
+                        <div className="d-flex">
+                          <Button className="me-2">View Details</Button>
+                          <Link
+                            to={`/stores/edit/${store?.id}`}
+                            onClick={() => this.props.selectStore(store)}
+                          >
+                            <Button>Edit Store</Button>
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -190,4 +225,5 @@ export default connect(mapStateToProps, {
   getAllStoresCount,
   paginateStores,
   storesPageLoadedChange,
+  selectStore,
 })(Stores);

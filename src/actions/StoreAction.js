@@ -9,9 +9,17 @@ import {
   ALL_STORES_COUNT_CHANGE,
   STORES_PAGE_LOADED_CHANGE,
   STORE_CREATING_CHANGE,
+  SELECT_STORE,
+  UPDATE_STORE_IN_LIST,
 } from "./actionTypes/storeTypes";
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
-import { storesCollection, storesCounters, storage } from "../firebase";
+import {
+  storesCollection,
+  storesCounters,
+  storage,
+  storesDb,
+  db,
+} from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   getDoc,
@@ -23,6 +31,7 @@ import {
   startAfter,
   doc,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 export const addStore = (store) => {
@@ -210,13 +219,17 @@ export const createNewStore = (data, imageFile) => {
     dispatch(storeCreatingChange(true));
 
     try {
-      const fileType = imageFile.name.split(".")[1];
-      const imageLink = `Stores/${generateFileName(fileType)}`;
-      const storageRef = ref(storage, imageLink);
+      let downloadLink = "";
 
-      await uploadBytes(storageRef, imageFile);
+      if (imageFile) {
+        const fileType = imageFile.name.split(".")[1];
+        const imageLink = `Stores/${generateFileName(fileType)}`;
+        const storageRef = ref(storage, imageLink);
 
-      const downloadLink = await getDownloadURL(storageRef);
+        await uploadBytes(storageRef, imageFile);
+
+        downloadLink = await getDownloadURL(storageRef);
+      }
 
       const store = {
         name: data.name.trim(),
@@ -251,6 +264,79 @@ export const createNewStore = (data, imageFile) => {
     } catch (error) {
       console.log(error);
       window.alert("There is an error creating store");
+    }
+
+    dispatch(storeCreatingChange(false));
+  };
+};
+
+export const selectStore = (store) => {
+  return {
+    type: SELECT_STORE,
+    store,
+  };
+};
+
+export const updateStoreInList = (store) => {
+  return {
+    type: UPDATE_STORE_IN_LIST,
+    store,
+  };
+};
+
+export const updateStore = (prevStoreData, data, imageFile) => {
+  return async (dispatch, getState) => {
+    const { imageBinaryUrl } = getState().upload;
+
+    dispatch(storeCreatingChange(true));
+
+    try {
+      let downloadLink = imageBinaryUrl ? imageBinaryUrl : "";
+
+      if (imageFile) {
+        const fileType = imageFile.name.split(".")[1];
+        const imageLink = `Stores/${generateFileName(fileType)}`;
+        const storageRef = ref(storage, imageLink);
+
+        await uploadBytes(storageRef, imageFile);
+
+        downloadLink = await getDownloadURL(storageRef);
+      }
+
+      const store = {
+        ...prevStoreData,
+        name: data.name.trim(),
+        dateUpdated: new Date(),
+        photoUri: downloadLink,
+        description: data.description.trim(),
+        address: {
+          formattedAddress: data.address.formattedAddress.trim(),
+          latitude:
+            data.address.latitude && data.address.latitude.trim() !== ""
+              ? parseInt(data.address.latitude, 10)
+              : 0,
+          longitude:
+            data.address.longitude && data.address.longitude.trim() !== ""
+              ? parseInt(data.address.longitude, 10)
+              : 0,
+        },
+      };
+
+      const docRef = doc(db, storesDb, prevStoreData.id);
+
+      await updateDoc(docRef, store);
+
+      dispatch(
+        updateStoreInList({
+          ...store,
+          id: prevStoreData.id,
+        })
+      );
+
+      alert("Successfully updated store");
+    } catch (error) {
+      console.log(error);
+      window.alert("There is an error updating store");
     }
 
     dispatch(storeCreatingChange(false));

@@ -9,6 +9,8 @@ import {
   ALL_STORES_COUNT_CHANGE,
   STORES_PAGE_LOADED_CHANGE,
   STORE_CREATING_CHANGE,
+  SELECT_STORE,
+  UPDATE_STORE_IN_LIST,
 } from "../actions/actionTypes/storeTypes";
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
 
@@ -20,6 +22,7 @@ const initialState = {
   },
   storeCurrentPage: 1,
   storeTotalPage: 1,
+  selectedStore: null,
 
   //  Loaders
   storeCreating: false,
@@ -29,6 +32,8 @@ const initialState = {
 
 const StoreReducer = (state = initialState, action) => {
   let index = undefined;
+  let tempStore = undefined;
+  let tempStores = undefined;
 
   switch (action.type) {
     case ADD_STORE:
@@ -38,6 +43,27 @@ const StoreReducer = (state = initialState, action) => {
         return {
           ...state,
           stores: [...state.stores, action.store],
+        };
+      } else {
+        return state;
+      }
+
+    case UPDATE_STORE_IN_LIST:
+      index = state.stores.findIndex((store) => store.id === action.store.id);
+
+      if (index !== -1) {
+        tempStores = [...state.stores];
+        tempStore = state.stores[index];
+
+        tempStore = {
+          ...action.store,
+        };
+
+        tempStores.splice(index, 1, tempStore);
+
+        return {
+          ...state,
+          stores: tempStores,
         };
       } else {
         return state;
@@ -93,6 +119,12 @@ const StoreReducer = (state = initialState, action) => {
       return {
         ...state,
         storeCreating: action.payload,
+      };
+
+    case SELECT_STORE:
+      return {
+        ...state,
+        selectedStore: action.store,
       };
 
     case STORE_RESET_STATE:

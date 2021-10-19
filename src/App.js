@@ -34,6 +34,7 @@ import Invoice from "./components/Order/Invoice";
 //  Store
 import Stores from "./components/Store/Stores";
 import CreateStore from "./components/Store/CreateStore";
+import EditStore from "./components/Store/EditStore";
 
 const NoMatch = () => <Redirect to="/" />;
 
@@ -73,6 +74,11 @@ class App extends Component {
                 exact
                 path="/orders/invoice/:reference"
                 component={Invoice}
+              />
+              <PrivateRoute
+                exact
+                path="/stores/edit/:storeId"
+                component={EditStore}
               />
               <Route component={NoMatch} />
             </Switch>
