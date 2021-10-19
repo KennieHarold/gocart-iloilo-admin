@@ -5,7 +5,11 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { emailChange, passwordChange, adminLogin } from "../actions/AuthAction";
+import {
+  emailChange,
+  passwordChange,
+  adminLogin,
+} from "../../actions/AuthAction";
 
 class Login extends Component {
   handleSubmit = (event) => {

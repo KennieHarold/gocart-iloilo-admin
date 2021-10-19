@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import SidebarWrapper from "./SharedComponents/SidebarWrapper";
+import SidebarWrapper from "../SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import moment from "moment";
@@ -9,7 +9,7 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Pagination from "react-bootstrap/Pagination";
-import toDecimal from "../helpers/toDecimal";
+import toDecimal from "../../helpers/toDecimal";
 import {
   getOrdersFromDb,
   getAllOrdersCount,
@@ -21,8 +21,8 @@ import {
   setOrderDelivered,
   setOrderCancelled,
   invoiceSelect,
-} from "../actions/OrderAction";
-import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
+} from "../../actions/OrderAction";
+import { CONST_ORDER_PAGE_LIMIT } from "../../utils/constants";
 
 class Orders extends Component {
   componentDidMount() {

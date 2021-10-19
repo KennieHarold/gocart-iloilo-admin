@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { checkLoggedIn } from "../actions/AuthAction";
+import { checkLoggedIn } from "../../actions/AuthAction";
 import Spinner from "react-bootstrap/Spinner";
 
 class Startup extends Component {

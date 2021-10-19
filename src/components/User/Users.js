@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import SidebarWrapper from "./SharedComponents/SidebarWrapper";
+import SidebarWrapper from "../SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
+import { CONST_USER_PAGE_LIMIT } from "../../utils/constants";
 import {
   getUsersFromDb,
   getRegisteredUsersCount,
@@ -13,8 +14,7 @@ import {
   paginateUsers,
   prevNextCurrentPage,
   jumpPage,
-} from "../actions/UserAction";
-import { CONST_USER_PAGE_LIMIT } from "../utils/constants";
+} from "../../actions/UserAction";
 
 class Users extends Component {
   async componentDidMount() {

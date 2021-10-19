@@ -13,17 +13,27 @@ import rootReducer from "./reducers";
 
 //  Shared Components
 import ScreenLoading from "./components/SharedComponents/ScreenLoading";
-import Startup from "./components/Startup";
 
-//  Components
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Users from "./components/Users";
-import Orders from "./components/Orders";
-import Reports from "./components/Reports";
-import Invoice from "./components/Invoice";
-import Stores from "./components/Stores";
-import CreateStore from "./components/CreateStore";
+//  Auth
+import Login from "./components/Auth/Login";
+import Startup from "./components/Auth/Startup";
+
+//  Dashboard
+import Dashboard from "./components/Dashboard/Dashboard";
+
+//  Users
+import Users from "./components/User/Users";
+
+//  Reports
+import Reports from "./components/Report/Reports";
+
+//  Order
+import Orders from "./components/Order/Orders";
+import Invoice from "./components/Order/Invoice";
+
+//  Store
+import Stores from "./components/Store/Stores";
+import CreateStore from "./components/Store/CreateStore";
 
 const NoMatch = () => <Redirect to="/" />;
 

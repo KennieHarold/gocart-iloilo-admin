@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import SidebarWrapper from "./SharedComponents/SidebarWrapper";
-import { clearSelectedInvoice } from "../actions/OrderAction";
+import SidebarWrapper from "../SharedComponents/SidebarWrapper";
+import { clearSelectedInvoice } from "../../actions/OrderAction";
 import { connect } from "react-redux";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -9,8 +9,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
 import moment from "moment";
 import { doc, getDoc } from "firebase/firestore";
-import { db, productsDb } from "../firebase";
-import toDecimal from "../helpers/toDecimal";
+import { db, productsDb } from "../../firebase";
+import toDecimal from "../../helpers/toDecimal";
 
 class Invoice extends Component {
   state = {

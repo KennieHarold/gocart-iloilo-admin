@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import SidebarWrapper from "./SharedComponents/SidebarWrapper";
+import SidebarWrapper from "../SharedComponents/SidebarWrapper";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { createNewStore } from "../actions/StoreAction";
+import { createNewStore } from "../../actions/StoreAction";
 
 class CreateStore extends Component {
   handleSubmit = async (e) => {

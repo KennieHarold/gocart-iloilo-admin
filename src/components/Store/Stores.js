@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import SidebarWrapper from "./SharedComponents/SidebarWrapper";
+import SidebarWrapper from "../SharedComponents/SidebarWrapper";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
-import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
+import { CONST_STORE_PAGE_LIMIT } from "../../utils/constants";
 import {
   prevNextCurrentPage,
   jumpPage,
@@ -15,7 +15,7 @@ import {
   getAllStoresCount,
   paginateStores,
   storesPageLoadedChange,
-} from "../actions/StoreAction";
+} from "../../actions/StoreAction";
 
 class Stores extends Component {
   componentDidMount() {
@@ -82,7 +82,7 @@ class Stores extends Component {
       },
       {
         key: "store-thead-created",
-        label: "Date Ordered",
+        label: "Date Created",
       },
     ];
 
