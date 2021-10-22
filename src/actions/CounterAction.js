@@ -22,7 +22,7 @@ export const setOrdersCount = (countObj) => {
     type: SET_ORDERS_COUNT,
     orders: {
       all: countObj.all,
-      processing: countObj.pending,
+      processing: countObj.processing,
       cancelled: countObj.cancelled,
       delivered: countObj.delivered,
     },
