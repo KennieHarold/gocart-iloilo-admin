@@ -75,7 +75,7 @@ class Dashboard extends Component {
                         className="mb-2"
                         style={{ fontSize: 17, fontWeight: 600 }}
                       >
-                        Pending Orders: {orders?.pending}
+                        Processing Orders: {orders?.processing}
                       </label>
                       <label
                         className="mb-2"
@@ -84,7 +84,7 @@ class Dashboard extends Component {
                         Delivered Orders: {orders?.delivered}
                       </label>
                       <label style={{ fontSize: 17, fontWeight: 600 }}>
-                        Canceleld Orders: {orders?.cancelled}
+                        Cancelled Orders: {orders?.cancelled}
                       </label>
                     </div>
                   </Card.Body>

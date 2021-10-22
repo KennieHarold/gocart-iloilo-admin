@@ -14,7 +14,7 @@ const initialState = {
   },
   orders: {
     all: 0,
-    pending: 0,
+    processing: 0,
     cancelled: 0,
     delivered: 0,
   },
@@ -37,7 +37,7 @@ const CounterReducer = (state = initialState, action) => {
         orders: {
           ...state.orders,
           all: action.orders.all,
-          pending: action.orders.pending,
+          processing: action.orders.pending,
           cancelled: action.orders.cancelled,
           delivered: action.orders.delivered,
         },

@@ -22,7 +22,7 @@ export const setOrdersCount = (countObj) => {
     type: SET_ORDERS_COUNT,
     orders: {
       all: countObj.all,
-      pending: countObj.pending,
+      processing: countObj.pending,
       cancelled: countObj.cancelled,
       delivered: countObj.delivered,
     },
@@ -67,7 +67,7 @@ export const getCountersData = () => {
     if (orders.exists()) {
       const data = {
         all: orders.data().all,
-        pending: orders.data().pending,
+        processing: orders.data().processing,
         cancelled: orders.data().cancelled,
         delivered: orders.data().delivered,
       };
