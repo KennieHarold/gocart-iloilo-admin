@@ -19,7 +19,7 @@ import {
   storesCollection,
   transactionsCollection,
   usersCollection,
-  ordersCounters,
+  ordersCounter,
   db,
   ordersDb,
   transactionsDb,
@@ -154,7 +154,7 @@ export const allOrdersCountChange = (value) => {
 
 export const getAllOrdersCount = () => {
   return async (dispatch) => {
-    const ordersDocSnap = await getDoc(ordersCounters);
+    const ordersDocSnap = await getDoc(ordersCounter);
 
     if (ordersDocSnap.exists()) {
       const count = ordersDocSnap.data().all;

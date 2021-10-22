@@ -32,5 +32,5 @@ export const storesCollection = collection(db, storesDb);
 const counters = env === "production" ? "liveCounters" : "devCounters";
 
 export const usersCounter = doc(db, counters, "users");
-export const ordersCounters = doc(db, counters, "orders");
-export const storesCounters = doc(db, counters, "stores");
+export const ordersCounter = doc(db, counters, "orders");
+export const storesCounter = doc(db, counters, "stores");

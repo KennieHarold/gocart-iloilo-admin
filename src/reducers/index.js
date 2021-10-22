@@ -5,6 +5,7 @@ import UserReducer from "./UserReducer";
 import OrderReducer from "./OrderReducer";
 import StoreReducer from "./StoreReducer";
 import UploadReducer from "./UploadReducer";
+import CounterReducer from "./CounterReducer";
 
 export default combineReducers({
   auth: AuthReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
   order: OrderReducer,
   store: StoreReducer,
   upload: UploadReducer,
+  counter: CounterReducer,
 });

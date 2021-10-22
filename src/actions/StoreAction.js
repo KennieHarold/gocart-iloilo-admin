@@ -15,7 +15,7 @@ import {
 import { CONST_STORE_PAGE_LIMIT } from "../utils/constants";
 import {
   storesCollection,
-  storesCounters,
+  storesCounter,
   storage,
   storesDb,
   db,
@@ -135,7 +135,7 @@ export const jumpPage = (page) => {
 
 export const getAllStoresCount = () => {
   return async (dispatch) => {
-    const storesDocSnap = await getDoc(storesCounters);
+    const storesDocSnap = await getDoc(storesCounter);
 
     if (storesDocSnap.exists()) {
       const count = storesDocSnap.data().all;
