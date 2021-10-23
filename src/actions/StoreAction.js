@@ -26,7 +26,6 @@ import {
   getDocs,
   query,
   orderBy,
-  where,
   limit,
   startAfter,
   doc,

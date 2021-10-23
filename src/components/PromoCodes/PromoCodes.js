@@ -10,7 +10,6 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import Form from "react-bootstrap/Form";
 
 class PromoCodes extends Component {
   componentDidMount() {
