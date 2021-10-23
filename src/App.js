@@ -38,6 +38,7 @@ import EditStore from "./components/Store/EditStore";
 
 //  Promo Codes
 import PromoCodes from "./components/PromoCodes/PromoCodes";
+import CreatePromoCode from "./components/PromoCodes/CreatePromoCode";
 
 const NoMatch = () => <Redirect to="/" />;
 
@@ -83,6 +84,11 @@ class App extends Component {
                 exact
                 path="/stores/edit/:storeId"
                 component={EditStore}
+              />
+              <PrivateRoute
+                exact
+                path="/promo-codes/create"
+                component={CreatePromoCode}
               />
               <Route component={NoMatch} />
             </Switch>

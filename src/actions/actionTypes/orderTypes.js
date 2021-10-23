@@ -14,3 +14,5 @@ export const INVOICE_SELECT = "invoice_select";
 export const CLEAR_SELECTED_INVOICE = "clear_selected_invoice";
 export const ADD_PROMO_CODE = "add_promo_code";
 export const PROMO_CODES_LOADING_CHANGE = "promo_codes_loading_change";
+export const PROMO_CODE_CREATING_CHANGE = "promo_code_creating_change";
+export const PROMO_CODES_LOADED_CHANGE = "promo_codes_loaded_change";

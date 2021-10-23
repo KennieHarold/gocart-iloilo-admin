@@ -15,10 +15,13 @@ import {
   CLEAR_SELECTED_INVOICE,
   ADD_PROMO_CODE,
   PROMO_CODES_LOADING_CHANGE,
+  PROMO_CODE_CREATING_CHANGE,
+  PROMO_CODES_LOADED_CHANGE,
 } from "../actions/actionTypes/orderTypes";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
 const initialState = {
+  //  Orders
   orders: [],
   orderLoading: false,
   orderTableLoading: false,
@@ -29,9 +32,17 @@ const initialState = {
   orderCurrentPage: 1,
   orderTotalPage: 1,
   orderStatusUpdating: false,
+
+  //  Invoice
   selectedInvoice: undefined,
+
+  //  Promo codes loaders
   promoCodesLoading: false,
+  promoCodeCreating: false,
+
+  //  Promo codes
   promoCodes: [],
+  promoCodesLoaded: false,
 };
 
 const OrderReducer = (state = initialState, action) => {
@@ -190,6 +201,18 @@ const OrderReducer = (state = initialState, action) => {
       } else {
         return state;
       }
+
+    case PROMO_CODE_CREATING_CHANGE:
+      return {
+        ...state,
+        promoCodeCreating: action.payload,
+      };
+
+    case PROMO_CODES_LOADED_CHANGE:
+      return {
+        ...state,
+        promoCodesLoaded: action.payload,
+      };
 
     case ORDER_RESET_STATE:
       return initialState;

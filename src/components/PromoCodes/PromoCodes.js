@@ -1,17 +1,38 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import SidebarWrapper from "../SharedComponents/SidebarWrapper";
-import { getPromoCodesFromDb } from "../../actions/OrderAction";
+import {
+  getPromoCodesFromDb,
+  promoCodesLoadedChange,
+} from "../../actions/OrderAction";
 import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import Form from "react-bootstrap/Form";
 
 class PromoCodes extends Component {
   componentDidMount() {
-    this.props.getPromoCodesFromDb();
+    this.initPromoCodes();
   }
+
+  initPromoCodes = async () => {
+    if (!this.props.promoCodesLoaded) {
+      await this.props.getPromoCodesFromDb();
+
+      console.log("heeey");
+      this.props.promoCodesLoadedChange(true);
+    }
+  };
+
+  parseTime = (time) => {
+    if (time.seconds) {
+      return time.seconds * 1000;
+    }
+
+    return time;
+  };
 
   render() {
     const { promoCodes, promoCodesLoading } = this.props;
@@ -22,7 +43,7 @@ class PromoCodes extends Component {
         label: "#",
       },
       {
-        key: "promo-thead-name",
+        key: "promo-thead-title",
         label: "Promo Code",
       },
       {
@@ -38,12 +59,16 @@ class PromoCodes extends Component {
         label: "Created",
       },
       {
-        key: "promo-thead-created",
+        key: "promo-thead-updated",
         label: "Updated",
       },
       {
         key: "promo-thead-active",
         label: "Is active?",
+      },
+      {
+        key: "promo-thead-actions",
+        label: "Actions",
       },
     ];
 
@@ -89,24 +114,24 @@ class PromoCodes extends Component {
                   {promoCodes.map((promoCode, index) => (
                     <tr key={promoCode.id} style={{ cursor: "pointer" }}>
                       <td>{index + 1}</td>
-                      <td>{promoCode?.name}</td>
+                      <td>{promoCode?.title}</td>
                       <td>{promoCode?.description}</td>
-                      <td>{promoCode?.minus}</td>
+                      <td>&#8369;&nbsp;{promoCode?.minus}</td>
                       <td>
-                        {moment(promoCode?.dateCreated?.seconds * 1000).format(
+                        {moment(this.parseTime(promoCode?.dateCreated)).format(
                           "LL"
                         )}
                       </td>
                       <td>
-                        {moment(promoCode?.dateUpdated?.seconds * 1000).format(
+                        {moment(this.parseTime(promoCode?.dateUpdated)).format(
                           "LL"
                         )}
                       </td>
-                      <td>Checkbox</td>
+                      <td>{promoCode?.isActive.toString()}</td>
                       <td style={{ width: 280 }}>
                         <div className="d-flex">
                           <Link to={`/promo-codes/edit/${promoCode?.id}`}>
-                            <Button>Edit Promo Code</Button>
+                            <Button className="me-2">Edit Promo Code</Button>
                           </Link>
                           <Button variant="danger">Delete</Button>
                         </div>
@@ -126,12 +151,16 @@ class PromoCodes extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { promoCodesLoading, promoCodes } = state.order;
+  const { promoCodesLoading, promoCodes, promoCodesLoaded } = state.order;
 
   return {
     promoCodesLoading,
     promoCodes,
+    promoCodesLoaded,
   };
 };
 
-export default connect(mapStateToProps, { getPromoCodesFromDb })(PromoCodes);
+export default connect(mapStateToProps, {
+  getPromoCodesFromDb,
+  promoCodesLoadedChange,
+})(PromoCodes);

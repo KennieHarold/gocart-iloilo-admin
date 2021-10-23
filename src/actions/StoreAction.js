@@ -260,7 +260,7 @@ export const createNewStore = (data, imageFile) => {
         })
       );
 
-      alert("Successfully added store");
+      window.alert("Successfully added store");
     } catch (error) {
       console.log(error);
       window.alert("There is an error creating store");

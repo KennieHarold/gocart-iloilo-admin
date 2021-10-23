@@ -15,6 +15,8 @@ import {
   CLEAR_SELECTED_INVOICE,
   ADD_PROMO_CODE,
   PROMO_CODES_LOADING_CHANGE,
+  PROMO_CODES_LOADED_CHANGE,
+  PROMO_CODE_CREATING_CHANGE,
 } from "./actionTypes/orderTypes";
 import {
   ordersCollection,
@@ -37,6 +39,7 @@ import {
   startAfter,
   doc,
   updateDoc,
+  addDoc,
 } from "firebase/firestore";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -406,5 +409,44 @@ export const getPromoCodesFromDb = () => {
     });
 
     dispatch({ type: PROMO_CODES_LOADING_CHANGE, payload: false });
+  };
+};
+
+export const promoCodesLoadedChange = (payload) => {
+  return {
+    type: PROMO_CODES_LOADED_CHANGE,
+    payload,
+  };
+};
+
+export const createNewPromoCode = (data) => {
+  return async (dispatch) => {
+    dispatch({ type: PROMO_CODE_CREATING_CHANGE, payload: true });
+
+    try {
+      const promoCode = {
+        dateCreated: new Date(),
+        dateUpdated: new Date(),
+        title: data.title.trim(),
+        description: data.description.trim(),
+        minus: data.minus,
+        isActive: data.isActive,
+      };
+
+      const docRef = await addDoc(promoCodesCollection, promoCode);
+
+      dispatch({
+        type: ADD_PROMO_CODE,
+        promoCode: {
+          ...promoCode,
+          id: docRef.id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      window.alert("Something went wrong on creating promo code");
+    }
+
+    dispatch({ type: PROMO_CODE_CREATING_CHANGE, payload: false });
   };
 };
