@@ -36,6 +36,9 @@ import Stores from "./components/Store/Stores";
 import CreateStore from "./components/Store/CreateStore";
 import EditStore from "./components/Store/EditStore";
 
+//  Promo Codes
+import PromoCodes from "./components/PromoCodes/PromoCodes";
+
 const NoMatch = () => <Redirect to="/" />;
 
 class App extends Component {
@@ -65,6 +68,7 @@ class App extends Component {
               <PrivateRoute exact path="/orders" component={Orders} />
               <PrivateRoute exact path="/reports" component={Reports} />
               <PrivateRoute exact path="/stores" component={Stores} />
+              <PrivateRoute exact path="/promo-codes" component={PromoCodes} />
               <PrivateRoute
                 exact
                 path="/stores/create"

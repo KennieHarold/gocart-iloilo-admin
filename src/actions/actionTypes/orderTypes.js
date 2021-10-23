@@ -12,3 +12,5 @@ export const SET_ORDER_STATE_DELIVERED = "set_order_state_delivered";
 export const SET_ORDER_STATE_CANCELLED = "set_order_state_cancelled";
 export const INVOICE_SELECT = "invoice_select";
 export const CLEAR_SELECTED_INVOICE = "clear_selected_invoice";
+export const ADD_PROMO_CODE = "add_promo_code";
+export const PROMO_CODES_LOADING_CHANGE = "promo_codes_loading_change";

@@ -13,6 +13,8 @@ import {
   SET_ORDER_STATE_CANCELLED,
   INVOICE_SELECT,
   CLEAR_SELECTED_INVOICE,
+  ADD_PROMO_CODE,
+  PROMO_CODES_LOADING_CHANGE,
 } from "../actions/actionTypes/orderTypes";
 import { CONST_ORDER_PAGE_LIMIT } from "../utils/constants";
 
@@ -28,6 +30,8 @@ const initialState = {
   orderTotalPage: 1,
   orderStatusUpdating: false,
   selectedInvoice: undefined,
+  promoCodesLoading: false,
+  promoCodes: [],
 };
 
 const OrderReducer = (state = initialState, action) => {
@@ -166,6 +170,26 @@ const OrderReducer = (state = initialState, action) => {
         ...state,
         orderLoading: action.payload,
       };
+
+    case PROMO_CODES_LOADING_CHANGE:
+      return {
+        ...state,
+        promoCodesLoading: action.payload,
+      };
+
+    case ADD_PROMO_CODE:
+      index = state.promoCodes.findIndex(
+        (promoCode) => promoCode.id === action.promoCode.id
+      );
+
+      if (index === -1) {
+        return {
+          ...state,
+          promoCodes: [...state.promoCodes, action.promoCode],
+        };
+      } else {
+        return state;
+      }
 
     case ORDER_RESET_STATE:
       return initialState;

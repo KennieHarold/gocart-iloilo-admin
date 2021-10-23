@@ -13,6 +13,8 @@ import {
   SET_ORDER_STATE_CANCELLED,
   INVOICE_SELECT,
   CLEAR_SELECTED_INVOICE,
+  ADD_PROMO_CODE,
+  PROMO_CODES_LOADING_CHANGE,
 } from "./actionTypes/orderTypes";
 import {
   ordersCollection,
@@ -23,6 +25,7 @@ import {
   db,
   ordersDb,
   transactionsDb,
+  promoCodesCollection,
 } from "../firebase";
 import {
   getDocs,
@@ -384,5 +387,24 @@ export const invoiceSelect = (invoice) => {
 export const clearSelectedInvoice = () => {
   return {
     type: CLEAR_SELECTED_INVOICE,
+  };
+};
+
+export const getPromoCodesFromDb = () => {
+  return async (dispatch) => {
+    dispatch({ type: PROMO_CODES_LOADING_CHANGE, payload: true });
+
+    const q = query(promoCodesCollection, orderBy("dateCreated", "desc"));
+    const querySnapshot = await getDocs(q).catch((error) => {
+      console.log(error);
+      alert(error.message);
+    });
+
+    querySnapshot.forEach((doc) => {
+      let data = doc.data();
+      dispatch({ type: ADD_PROMO_CODE, promoCode: data });
+    });
+
+    dispatch({ type: PROMO_CODES_LOADING_CHANGE, payload: false });
   };
 };

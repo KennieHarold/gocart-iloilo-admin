@@ -7,6 +7,7 @@ import { AiOutlineDashboard, AiOutlineBook } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { BiStoreAlt } from "react-icons/bi";
+import { AiFillGift } from "react-icons/ai";
 import Button from "react-bootstrap/Button";
 import { logout } from "../../actions/AuthAction";
 
@@ -43,6 +44,12 @@ class SidebarWrappper extends Component {
         label: "Stores",
         path: "/stores",
         icon: <BiStoreAlt style={{ fontSize: 28, marginBottom: 3 }} />,
+      },
+      {
+        key: "item-promo-codes",
+        label: "Promo Codes",
+        path: "/promo-codes",
+        icon: <AiFillGift style={{ fontSize: 28, marginBottom: 3 }} />,
       },
       {
         key: "item-reports",
